@@ -1,0 +1,3436 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Chapter & Verse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #efe4ce;
+        --paper2: #e3d3b3;
+        --ink: #2b1d12;
+        --faded: #6b5640;
+        --ox: #7a2e1f;
+        --gold: #a67c2e;
+        --head: "Fraunces", "Iowan Old Style", Georgia, serif;
+        --body: "Newsreader", "Iowan Old Style", Georgia, serif;
+        --r: 2px;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      :root[data-theme="candlelight"] {
+        color-scheme: dark;
+        --paper: #2a1e15;
+        --paper2: #1f1610;
+        --ink: #eadcc0;
+        --faded: #b09a78;
+        --ox: #d9795f;
+        --gold: #b8903e;
+      }
+      :root[data-theme="moss"] {
+        --paper: #e2e8d2;
+        --paper2: #cfd9ba;
+        --ink: #1b2e22;
+        --faded: #4d6354;
+        --ox: #6b2a1a;
+        --gold: #8a7a33;
+      }
+      :root[data-theme="wine"] {
+        --paper: #f0ddd6;
+        --paper2: #e3c9c0;
+        --ink: #3a1218;
+        --faded: #7a4f52;
+        --ox: #7a1f2b;
+        --gold: #a67c2e;
+      }
+      :root[data-theme="candlelight"] body::before {
+        opacity: 0.12;
+      }
+      :root[data-theme="candlelight"] .stamp {
+        mix-blend-mode: normal;
+      }
+      .themes {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        padding: 2px 2px 0;
+      }
+      .themes button {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border-radius: 50%;
+        border: 2px solid var(--faded);
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
+      }
+      .themes button:hover {
+        border-color: var(--ox);
+      }
+      .themes button[aria-pressed="true"] {
+        border-color: var(--ox);
+        outline: 2px solid var(--ox);
+        outline-offset: 2px;
+      }
+      .sum {
+        list-style: none;
+        margin: 16px 0;
+        padding: 0;
+        max-width: 36em;
+      }
+      .sum li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--faded);
+      }
+      .sum li:first-child {
+        border-top: 1px solid var(--ink);
+      }
+      select {
+        font: inherit;
+        font-size: 1rem;
+        color: var(--ink);
+        background: var(--paper2);
+        border: 1px solid var(--ink);
+        border-radius: 2px;
+        padding: 8px 10px;
+        max-width: 100%;
+        margin-top: 4px;
+      }
+      .tg {
+        border: 1px solid var(--faded);
+        border-radius: 2px;
+        padding: 0 8px;
+        font-variant: small-caps;
+        letter-spacing: 0.06em;
+        color: var(--faded);
+        font-size: 0.95rem;
+        white-space: nowrap;
+        display: inline-block;
+        justify-self: start;
+      }
+      .tg.c {
+        border-color: var(--ox);
+        color: var(--ox);
+      }
+      .today {
+        border-left: 3px solid var(--ox);
+        padding-left: 12px;
+      }
+      .opn {
+        border: 1px solid var(--ox);
+        border-left-width: 4px;
+        border-radius: 2px;
+        padding: 2px 20px 12px;
+        margin: 28px 0;
+        max-width: 36em;
+        background: var(--paper2);
+      }
+      .opn h2 {
+        margin-top: 0.6em;
+      }
+      html {
+        height: 100%;
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--paper2);
+        color: var(--ink);
+        font-family: var(--body);
+        font-size: 19px;
+        line-height: 1.65;
+        -webkit-text-size-adjust: 100%;
+      }
+      /* paper grain: light, multiplied, never over text contrast */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.28;
+        mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .42  0 0 0 0 .33  0 0 0 0 .22  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      }
+      a {
+        color: var(--ox);
+        text-decoration: none;
+        border-bottom: 1px solid var(--gold);
+      }
+      a:hover {
+        border-bottom-color: var(--ox);
+      }
+      :focus-visible {
+        outline: 2px solid var(--ox);
+        outline-offset: 3px;
+      }
+      .sheet {
+        max-width: 1080px;
+        margin: 0 auto;
+        background: var(--paper);
+        border: 1px solid var(--faded);
+        border-radius: 1px 2px 1px 2px;
+        outline: 1px solid var(--faded);
+        outline-offset: -9px;
+        padding: 16px 22px 28px;
+        transform: rotate(-0.12deg);
+      }
+      .masthead {
+        position: sticky;
+        top: env(safe-area-inset-top, 0px);
+        z-index: 40;
+        background: var(--paper);
+        padding-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 6px 24px;
+        border-bottom: 3px double var(--ink);
+        padding-bottom: 10px;
+      }
+      .brand {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 1.7rem;
+        letter-spacing: 0.01em;
+        border: 0;
+        color: var(--ink);
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 18px;
+        font-variant: small-caps;
+        letter-spacing: 0.06em;
+        font-size: 1.02rem;
+      }
+      nav a {
+        color: var(--ink);
+        border-bottom: 1px solid transparent;
+      }
+      nav a:hover,
+      nav a[aria-current] {
+        border-bottom-color: var(--ox);
+      }
+      .ref {
+        font-family: var(--body);
+        font-variant: small-caps;
+        letter-spacing: 0.07em;
+        color: var(--faded);
+        font-size: 0.95rem;
+      }
+      .page {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0 44px;
+        margin-top: 30px;
+      }
+      .margin {
+        font-size: 0.92rem;
+        line-height: 1.5;
+        color: var(--faded);
+        border-left: 1px solid var(--gold);
+        padding-left: 14px;
+        margin: 18px 0 6px;
+      }
+      .margin p {
+        margin: 0 0 14px;
+      }
+      .margin sup,
+      .ref sup {
+        font-size: 0.7em;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: var(--head);
+        font-weight: 700;
+        line-height: 1.12;
+        margin: 0 0 0.5em;
+      }
+      h1 {
+        font-size: clamp(2.1rem, 7.5vw, 3.5rem);
+        font-variation-settings: "opsz" 144;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p {
+        margin: 0 0 1em;
+        max-width: 34em;
+      }
+      .lead {
+        font-size: 1.2rem;
+      }
+      .rule {
+        border: 0;
+        border-top: 1px solid var(--gold);
+        border-bottom: 1px solid var(--gold);
+        height: 4px;
+        margin: 34px 0;
+      }
+      .todayq {
+        background: var(--paper2);
+        border: 1px solid var(--faded);
+        border-radius: var(--r);
+        padding: 18px 20px;
+        max-width: 36em;
+      }
+      .q {
+        font-family: var(--head);
+        font-weight: 500;
+        font-size: 1.35rem;
+        line-height: 1.3;
+        margin: 0.2em 0 0.9em;
+      }
+      .btn {
+        display: inline-block;
+        font: inherit;
+        font-variant: small-caps;
+        letter-spacing: 0.07em;
+        font-size: 1.05rem;
+        color: var(--ink);
+        background: transparent;
+        border: 1px solid var(--ink);
+        border-radius: var(--r);
+        padding: 8px 18px;
+        cursor: pointer;
+        background-image: linear-gradient(var(--ox), var(--ox));
+        background-repeat: no-repeat;
+        background-size: 0 2px;
+        background-position: 18px calc(100% - 6px);
+        transition: background-size 0.18s;
+      }
+      .btn:hover {
+        background-size: calc(100% - 36px) 2px;
+      }
+      .btn[disabled] {
+        opacity: 0.55;
+        cursor: default;
+      }
+      .sections {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: 1px solid var(--ink);
+      }
+      .sections li {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--faded);
+      }
+      .sections .t {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 1.3rem;
+      }
+      .sections .d {
+        max-width: 32em;
+      }
+      .tag {
+        font-variant: small-caps;
+        letter-spacing: 0.06em;
+        color: var(--faded);
+        font-size: 0.95rem;
+      }
+      .foot {
+        margin-top: 40px;
+        border-top: 3px double var(--ink);
+        padding-top: 10px;
+        color: var(--faded);
+        font-size: 0.9rem;
+      }
+      /* trivia */
+      .bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 22px;
+        margin-bottom: 14px;
+      }
+      .cat {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0 14px;
+      }
+      .cat .no {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 2.2rem;
+        line-height: 1;
+        color: var(--ox);
+      }
+      .opts {
+        list-style: none;
+        margin: 20px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 10px;
+        max-width: 34em;
+      }
+      .opt {
+        width: 100%;
+        text-align: left;
+        font: inherit;
+        color: var(--ink);
+        background: transparent;
+        border: 1px solid var(--faded);
+        border-radius: var(--r);
+        padding: 11px 14px;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 2em 1fr;
+        align-items: baseline;
+      }
+      .opt .k {
+        font-variant: small-caps;
+        color: var(--faded);
+        letter-spacing: 0.06em;
+      }
+      .opt:hover:not([disabled]) {
+        border-color: var(--ink);
+        background: var(--paper2);
+        text-decoration: underline;
+        text-decoration-color: var(--ox);
+        text-underline-offset: 5px;
+        text-decoration-thickness: 2px;
+      }
+      .opt[disabled] {
+        cursor: default;
+      }
+      .opt.right {
+        border-color: var(--ox);
+        border-width: 2px;
+        background: var(--paper2);
+        font-weight: 600;
+      }
+      .opt.wrong {
+        color: var(--faded);
+        text-decoration: line-through;
+        text-decoration-color: var(--ox);
+      }
+      .answer {
+        margin-top: 26px;
+        max-width: 36em;
+        position: relative;
+        border-top: 3px double var(--ink);
+        padding-top: 16px;
+      }
+      .answer[hidden] {
+        display: none;
+      }
+      .stamp {
+        position: absolute;
+        right: 0;
+        top: -6px;
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 1.3rem;
+        letter-spacing: 0.08em;
+        color: var(--ox);
+        border: 3px double var(--ox);
+        border-radius: 2px;
+        padding: 2px 12px;
+        transform: rotate(-6deg);
+        background: transparent;
+        mix-blend-mode: multiply;
+        opacity: 0.9;
+        animation: stamp 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+      }
+      .stamp.miss {
+        color: var(--faded);
+        border-color: var(--faded);
+      }
+      @keyframes stamp {
+        0% {
+          transform: rotate(-6deg) scale(2.2);
+          opacity: 0;
+        }
+        60% {
+          opacity: 0.95;
+        }
+        100% {
+          transform: rotate(-6deg) scale(1);
+        }
+      }
+      .verse {
+        border-left: 3px solid var(--gold);
+        padding: 2px 0 2px 16px;
+        margin: 14px 0;
+        font-style: italic;
+        max-width: 32em;
+      }
+      .verse sup {
+        font-style: normal;
+        font-size: 0.62em;
+        color: var(--ox);
+        margin-right: 3px;
+        font-weight: 600;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 22px;
+        align-items: center;
+        margin-top: 18px;
+      }
+      [data-view] {
+        display: none;
+      }
+      [data-view].on {
+        display: block;
+      }
+      @media (min-width: 860px) {
+        body {
+          padding: 28px;
+          font-size: 20px;
+        }
+        .sheet {
+          padding: 44px 56px 34px;
+        }
+        .page {
+          grid-template-columns: minmax(0, 1fr) 250px;
+        }
+        .margin {
+          margin: 6px 0 0;
+        }
+        .sections li {
+          grid-template-columns: 15em 1fr auto;
+          align-items: baseline;
+          gap: 0 24px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .stamp {
+          animation: none;
+        }
+        .btn {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet">
+      <header class="masthead">
+        <a class="brand" href="#home">Chapter &amp; Verse</a>
+        <nav aria-label="Sections">
+          <a href="#home" data-nav="home">Home</a>
+          <a href="#trivia" data-nav="trivia">Quiz</a>
+          <a href="#topics" data-nav="topics">Is it in the Bible?</a>
+          <a href="#read" data-nav="read">Read more</a>
+        </nav>
+        <div class="themes" role="group" aria-label="Page theme">
+          <button
+            type="button"
+            data-t="sepia"
+            title="Sepia"
+            aria-label="Sepia theme"
+            style="--a: #2b1d12; --b: #efe4ce"
+          ></button>
+          <button
+            type="button"
+            data-t="candlelight"
+            title="Candlelight"
+            aria-label="Candlelight theme"
+            style="--a: #eadcc0; --b: #2a1e15"
+          ></button>
+          <button
+            type="button"
+            data-t="moss"
+            title="Moss"
+            aria-label="Moss theme"
+            style="--a: #1b2e22; --b: #e2e8d2"
+          ></button>
+          <button
+            type="button"
+            data-t="wine"
+            title="Wine"
+            aria-label="Wine theme"
+            style="--a: #3a1218; --b: #f0ddd6"
+          ></button>
+        </div>
+      </header>
+
+      <!-- HOME -->
+      <main data-view="home" id="home">
+        <div class="page">
+          <div>
+            <h1>Open the book and read it.</h1>
+            <p class="lead">
+              These are small sets of questions about the Bible, the
+              questions are only a doorway. Every answer sends you to the
+              chapter, and the chapter is the point.
+            </p>
+            <p>
+              Nothing here asks you to take our word for anything. Quotes are
+              given in full, disagreements are stated in the terms each side
+              would use, and you are left with a list of passages to read
+              yourself.
+            </p>
+
+            <hr class="rule" />
+
+            <h2>Today’s question</h2>
+            <div class="todayq">
+              <span class="ref">Scholar &middot; 1 Samuel 22</span>
+              <p class="q" style="margin-bottom: 1em">
+                Who was Doeg the Edomite, and what did Saul have him do?
+              </p>
+              <a
+                class="btn"
+                href="#trivia"
+                style="border-bottom: 1px solid var(--ink)"
+                >Answer it</a
+              >
+            </div>
+
+            <hr class="rule" />
+
+            <h2>Three places to start</h2>
+            <ul class="sections">
+              <li>
+                <span class="t"
+                  ><a href="#trivia" style="border: 0; color: var(--ink)"
+                    >Trivia</a
+                  ></span
+                ><span class="d"
+                  >Three tiers of questions, one at a time, each ending at the
+                  page it came from.</span
+                ><span class="tag">Open</span>
+              </li>
+              <li>
+                <span class="t"
+                  ><a href="#topics" style="border: 0; color: var(--ink)"
+                    >Is it in the Bible?</a
+                  ></span
+                ><span class="d"
+                  >Common practices and sayings, set beside the verses that bear
+                  on them.</span
+                ><span class="tag">Open</span>
+              </li>
+              <li>
+                <span class="t"
+                  ><a href="#read" style="border: 0; color: var(--ink)"
+                    >Read more</a
+                  ></span
+                ><span class="d"
+                  >A short daily reading, tied to the questions you have
+                  missed.</span
+                ><span class="tag">Open</span>
+              </li>
+            </ul>
+          </div>
+          <aside class="margin" aria-label="Margin notes">
+            <p>
+              <span class="ref">Acts 17:11</span><br />The Bereans “searched the
+              scriptures daily, whether those things were so.” That is the whole
+              method here.
+            </p>
+            <p>
+              <sup>1</sup> Quotations are from the King James Version, which is
+              in the public domain. Other translations can be added later.
+            </p>
+            <p>
+              <sup>2</sup> A new question each day. A streak counts days you
+              answered at least one.
+            </p>
+          </aside>
+        </div>
+      </main>
+
+      <!-- TRIVIA -->
+      <main data-view="trivia" id="trivia">
+        <div class="page">
+          <div>
+            <section id="setup">
+              <h2>How many questions?</h2>
+              <p>
+                Choose where the questions come from, then how many (5 to 30). A
+                new set never repeats a question you have already seen. Only
+                Retry does that.
+              </p>
+              <p>
+                <label class="ref" for="tiersel">Tier</label><br /><select
+                  id="tiersel"
+                >
+                  <option value="">All tiers</option>
+                  <option>Beginner</option>
+                  <option>Scholar</option>
+                  <option>Few People Know This</option>
+                </select>
+              </p>
+              <p>
+                <label class="ref" for="book">Questions from</label
+                ><br /><select id="book"></select>
+              </p>
+              <div class="actions" id="counts"></div>
+              <p class="ref" id="left"></p>
+              <button class="btn" id="reset" type="button" hidden>
+                Clear what I have seen and start over
+              </button>
+            </section>
+            <section id="summary" hidden aria-live="polite"></section>
+            <div id="play" hidden>
+              <div class="bar ref">
+                <span id="tier">Beginner</span><span id="count"></span
+                ><span id="score"></span><span id="streak"></span>
+              </div>
+              <div class="cat">
+                <span class="no" id="qno">1.</span>
+                <div>
+                  <h2 class="q" id="qtext" tabindex="-1"></h2>
+                </div>
+              </div>
+              <ol class="opts" id="opts" aria-label="Answers"></ol>
+
+              <section class="answer" id="answer" hidden aria-live="polite">
+                <span class="stamp" id="stamp"></span>
+                <h3 id="atitle" style="font-size: 1.25rem"></h3>
+                <p id="aexp"></p>
+                <blockquote
+                  class="verse"
+                  id="averse"
+                  style="margin-left: 0"
+                ></blockquote>
+                <div class="actions">
+                  <a id="chap" href="#" target="_blank" rel="noopener"
+                    >Read the full chapter</a
+                  >
+                  <button class="btn" id="next" type="button">
+                    Next question
+                  </button>
+                </div>
+              </section>
+            </div>
+          </div>
+          <aside class="margin" aria-label="Margin notes">
+            <p>
+              <span class="ref" id="mref"></span><br /><span id="mnote"></span>
+            </p>
+            <p>
+              Pick a tier and a book on the start screen. Beginner, Scholar and
+              “Few People Know This” can each be played on their own or mixed.
+            </p>
+          </aside>
+        </div>
+      </main>
+
+      <!-- PLACEHOLDER -->
+      <main data-view="topics" id="topics">
+        <div class="page">
+          <div>
+            <h1>Is it in the Bible?</h1>
+            <p class="lead">
+              Common practices and sayings, set beside the verses that bear on
+              them. Each is tagged by how settled it is: some are plain in
+              Scripture, and others are ones where Christians who love the Bible
+              disagree.
+            </p>
+            <p>
+              Every page runs in the same order and ends with passages for you
+              to read yourself.
+            </p>
+            <ul class="sections" id="tlist"></ul>
+          </div>
+          <aside class="margin">
+            <p>
+              <span class="ref">Acts 17:11</span><br />Check what you read here
+              against the passage itself.
+            </p>
+            <p>
+              <sup>1</sup> Quotes are KJV. A disagreement is not an insult: the
+              other side is stated as its own people would put it.
+            </p>
+          </aside>
+        </div>
+      </main>
+      <main data-view="topic" id="topic">
+        <div class="page">
+          <div id="tbody"></div>
+          <aside class="margin">
+            <p>
+              <span class="ref">Read it yourself</span><br />A verse can be
+              pulled out of its chapter and made to say almost anything. Read
+              the whole chapter first.
+            </p>
+          </aside>
+        </div>
+      </main>
+      <main data-view="read" id="read">
+        <div class="page">
+          <div>
+            <h1>Read more</h1>
+            <p class="lead">
+              One short reading a day, tied to the questions and topics here.
+              Today’s is marked.
+            </p>
+            <ol class="sum" id="rbody" style="max-width: 38em"></ol>
+          </div>
+          <aside class="margin">
+            <p>
+              <span class="ref">Psalm 119:105</span><br />“Thy word is a lamp
+              unto my feet, and a light unto my path.”
+            </p>
+          </aside>
+        </div>
+      </main>
+
+      <footer class="foot">
+        Chapter &amp; Verse is a placeholder name. Read the passage before you
+        trust the summary, including ours.
+      </footer>
+    </div>
+
+    <script>
+      const QS = [
+        {
+          t: "Scholar",
+          q: "Who was Doeg the Edomite, and what did Saul have him do?",
+          o: [
+            "Goliath’s armor-bearer, who carried the giant’s sword to Saul",
+            "Saul’s chief herdsman, who struck down the priests of Nob",
+            "A Philistine king who gave David refuge at Gath",
+            "A prophet sent to rebuke Saul at Gilgal",
+          ],
+          a: 1,
+          exp: "Doeg saw Ahimelech help David at Nob and told Saul. When Saul’s own guards refused to touch the Lord’s priests, Doeg did it.",
+          v: [
+            [
+              "22:18",
+              "And the king said to Doeg, Turn thou, and fall upon the priests. And Doeg the Edomite turned, and he fell upon the priests, and he slew on that day fourscore and five persons that did wear a linen ephod.",
+            ],
+          ],
+          ref: "1 Samuel 21:7; 22:9–19",
+          chap: "1+Samuel+22",
+          note: "David wrote Psalm 52 about Doeg. The heading of the psalm says so. Read the two together.",
+        },
+        {
+          t: "Scholar",
+          q: "In which town did Saul find the woman who called up Samuel? Many people say “the witch of Edom.”",
+          o: ["Edom", "Endor", "Eglon", "En-gedi"],
+          a: 1,
+          exp: "It was Endor. Edom is the land of Esau’s descendants, and Doeg’s home. The two names are easy to mix up.",
+          v: [
+            [
+              "28:7",
+              "Then said Saul unto his servants, Seek me a woman that hath a familiar spirit, that I may go to her, and enquire of her. And his servants said to him, Behold, there is a woman that hath a familiar spirit at Endor.",
+            ],
+          ],
+          ref: "1 Samuel 28:3–25",
+          chap: "1+Samuel+28",
+          note: "Saul had put the mediums out of the land (28:3) and then went looking for one. Compare Deuteronomy 18:10–12.",
+        },
+        {
+          t: "Scholar",
+          q: "Which judge of Israel was left-handed and killed Eglon, the king of Moab?",
+          o: ["Gideon", "Ehud", "Othniel", "Jephthah"],
+          a: 1,
+          exp: "Ehud, a Benjamite. He strapped a short sword to his right thigh, where a guard would not look, and delivered “a message from God.”",
+          v: [
+            [
+              "3:21",
+              "And Ehud put forth his left hand, and took the dagger from his right thigh, and thrust it into his belly.",
+            ],
+          ],
+          ref: "Judges 3:12–30",
+          chap: "Judges+3",
+          note: "“Benjamin” means “son of the right hand,” which makes the left-handed detail pointed.",
+        },
+        {
+          t: "Few People Know This",
+          q: "Which book of the Bible never names God, even once?",
+          o: ["Ruth", "Esther", "Song of Solomon", "Ecclesiastes"],
+          a: 1,
+          exp: "Esther. God is never named, yet the book keeps pointing at his hand: Mordecai says relief will come “from another place.” (Some copies of Song of Solomon have a divine name in 8:6, which is disputed.)",
+          v: [
+            [
+              "4:14",
+              "For if thou altogether holdest thy peace at this time, then shall there enlargement and deliverance arise to the Jews from another place; but thou and thy father’s house shall be destroyed: and who knoweth whether thou art come to the kingdom for such a time as this?",
+            ],
+          ],
+          ref: "Esther 4:14",
+          chap: "Esther+4",
+          note: "Read the whole book in one sitting. It is ten short chapters.",
+        },
+        {
+          t: "Few People Know This",
+          q: "A pagan king is called the Lord’s “anointed” by name in Isaiah. Who?",
+          o: ["Nebuchadnezzar", "Cyrus", "Darius", "Artaxerxes"],
+          a: 1,
+          exp: "Cyrus of Persia, named about a century and a half before he was born, who let the exiles go home.",
+          v: [
+            [
+              "45:1",
+              "Thus saith the LORD to his anointed, to Cyrus, whose right hand I have holden, to subdue nations before him; and I will loose the loins of kings.",
+            ],
+          ],
+          ref: "Isaiah 45:1–4; Ezra 1:1–4",
+          chap: "Isaiah+45",
+          note: "Cyrus’s decree to rebuild the temple is in Ezra 1.",
+        },
+        {
+          t: "Scholar",
+          q: "How old was Josiah when he became king of Judah?",
+          o: ["Eight", "Twelve", "Sixteen", "Twenty-one"],
+          a: 0,
+          exp: "Eight. In his eighteenth year the high priest found the book of the law in the temple, and Josiah tore his clothes when it was read.",
+          v: [
+            [
+              "22:1",
+              "Josiah was eight years old when he began to reign, and he reigned thirty and one years in Jerusalem.",
+            ],
+          ],
+          ref: "2 Kings 22:1–13",
+          chap: "2+Kings+22",
+          note: "The reform that followed is in 2 Kings 23. A lost book led to a national return.",
+        },
+        {
+          t: "Few People Know This",
+          q: "What was the name of the high priest’s servant whose ear Peter cut off in the garden?",
+          o: ["Malchus", "Caiaphas", "Annas", "Barabbas"],
+          a: 0,
+          exp: "Malchus. Only John names him. Luke adds that Jesus touched the ear and healed it.",
+          v: [
+            [
+              "18:10",
+              "Then Simon Peter having a sword drew it, and smote the high priest’s servant, and cut off his right ear. The servant’s name was Malchus.",
+            ],
+          ],
+          ref: "John 18:10; Luke 22:50–51",
+          chap: "John+18",
+          note: "Caiaphas was the high priest that year. Annas was his father-in-law.",
+        },
+        {
+          t: "Scholar",
+          q: "Who fell from a third-floor window while Paul preached late into the night?",
+          o: ["Eutychus", "Epaphras", "Erastus", "Enoch"],
+          a: 0,
+          exp: "Eutychus, a young man at Troas. He was taken up dead, and Paul went down and brought him back alive.",
+          v: [
+            [
+              "20:9",
+              "And there sat in a window a certain young man named Eutychus, being fallen into a deep sleep: and as Paul was long preaching, he sunk down with sleep, and fell down from the third loft, and was taken up dead.",
+            ],
+          ],
+          ref: "Acts 20:7–12",
+          chap: "Acts+20",
+          note: "Paul kept talking until daybreak after that (20:11).",
+        },
+        {
+          t: "Scholar",
+          q: "Which prophet was told to marry Gomer as a picture of Israel’s unfaithfulness?",
+          o: ["Amos", "Hosea", "Joel", "Micah"],
+          a: 1,
+          exp: "Hosea. His marriage was a living parable of God’s faithfulness to an unfaithful people.",
+          v: [
+            [
+              "1:2",
+              "The beginning of the word of the LORD by Hosea. And the LORD said to Hosea, Go, take unto thee a wife of whoredoms and children of whoredoms: for the land hath committed great whoredom, departing from the LORD.",
+            ],
+          ],
+          ref: "Hosea 1–3",
+          chap: "Hosea+1",
+          note: "Chapter 3 is the part about buying her back.",
+        },
+        {
+          t: "Few People Know This",
+          q: "Which tribe of Israel received no territory of its own in Canaan?",
+          o: ["Dan", "Reuben", "Levi", "Simeon"],
+          a: 2,
+          exp: "Levi. The priests and Levites were given towns to live in, and the Lord himself as their inheritance. Joseph’s share was split between Ephraim and Manasseh, so the count of twelve still holds.",
+          v: [
+            [
+              "13:14",
+              "Only unto the tribe of Levi he gave none inheritance; the sacrifices of the LORD God of Israel made by fire are their inheritance.",
+            ],
+          ],
+          ref: "Joshua 13:14; 21",
+          chap: "Joshua+13",
+          note: "The Levite towns are listed in Joshua 21.",
+        },
+        {
+          t: "Scholar",
+          q: "Which king saw fingers write on his palace wall during a feast?",
+          o: ["Nebuchadnezzar", "Belshazzar", "Darius", "Ahasuerus"],
+          a: 1,
+          exp: "Belshazzar of Babylon. Daniel read the writing, and the kingdom fell that same night.",
+          v: [
+            [
+              "5:5",
+              "In the same hour came forth fingers of a man’s hand, and wrote over against the candlestick upon the plaister of the wall of the king’s palace: and the king saw the part of the hand that wrote.",
+            ],
+          ],
+          ref: "Daniel 5",
+          chap: "Daniel+5",
+          note: "The words were Mene, Mene, Tekel, Upharsin.",
+        },
+        {
+          t: "Few People Know This",
+          q: "Who is the first person in the Bible to be called a prophet?",
+          o: ["Moses", "Abraham", "Enoch", "Samuel"],
+          a: 1,
+          exp: "Abraham, in God’s own words to Abimelech, years before Moses.",
+          v: [
+            [
+              "20:7",
+              "Now therefore restore the man his wife; for he is a prophet, and he shall pray for thee, and thou shalt live.",
+            ],
+          ],
+          ref: "Genesis 20:1–7",
+          chap: "Genesis+20",
+          note: "Here the prophet’s job is to pray for someone else.",
+        },
+        {
+          t: "Scholar",
+          q: "Which early believer’s name, Barnabas, means “son of consolation”?",
+          o: ["Joses the Levite of Cyprus", "Silas", "Timothy", "Titus"],
+          a: 0,
+          exp: "Joses, a Levite from Cyprus. The apostles gave him the name Barnabas, and he later travelled with Paul.",
+          v: [
+            [
+              "4:36",
+              "And Joses, who by the apostles was surnamed Barnabas, (which is, being interpreted, The son of consolation,) a Levite, and of the country of Cyprus.",
+            ],
+          ],
+          ref: "Acts 4:36–37",
+          chap: "Acts+4",
+          note: "Barnabas is also the one who stood up for Saul in Acts 9:27.",
+        },
+        {
+          t: "Scholar",
+          q: "Which woman killed the enemy commander Sisera with a tent peg?",
+          o: ["Deborah", "Jael", "Delilah", "Abigail"],
+          a: 1,
+          exp: "Jael, the wife of Heber. Deborah had foretold that the Lord would sell Sisera into a woman’s hand.",
+          v: [
+            [
+              "4:21",
+              "Then Jael Heber’s wife took a nail of the tent, and took an hammer in her hand, and went softly unto him, and smote the nail into his temples, and fastened it into the ground: for he was fast asleep and weary. So he died.",
+            ],
+          ],
+          ref: "Judges 4:17–22",
+          chap: "Judges+4",
+          note: "Judges 5 is the same story told as a song.",
+        },
+        {
+          t: "Few People Know This",
+          q: "Who sent a warning to Pilate: “Have thou nothing to do with that just man”?",
+          o: [
+            "Herod Antipas",
+            "Caiaphas",
+            "Pilate’s wife",
+            "Joseph of Arimathea",
+          ],
+          a: 2,
+          exp: "Pilate’s wife, after a dream. Only Matthew records it, and she is not named in Scripture.",
+          v: [
+            [
+              "27:19",
+              "When he was set down on the judgment seat, his wife sent unto him, saying, Have thou nothing to do with that just man: for I have suffered many things this day in a dream because of him.",
+            ],
+          ],
+          ref: "Matthew 27:15–26",
+          chap: "Matthew+27",
+          note: "Pilate then washed his hands before the crowd (27:24).",
+        },
+        {
+          t: "Scholar",
+          q: "Which son of Solomon lost ten tribes by ignoring the old men’s advice?",
+          o: ["Jeroboam", "Rehoboam", "Abijah", "Ahaziah"],
+          a: 1,
+          exp: "Rehoboam. He answered the people harshly, and the north broke away under Jeroboam.",
+          v: [
+            [
+              "12:13",
+              "And the king answered the people roughly, and forsook the old men’s counsel that they gave him.",
+            ],
+          ],
+          ref: "1 Kings 12:1–20",
+          chap: "1+Kings+12",
+          note: "Jeroboam was not Solomon’s son. He led the rebellion.",
+        },
+        {
+          t: "Few People Know This",
+          q: "Which prophet was told to lie on his side 390 days to carry Israel’s sin?",
+          o: ["Isaiah", "Jeremiah", "Ezekiel", "Daniel"],
+          a: 2,
+          exp: "Ezekiel. It was an acted-out sign, one day for each year, set before the people of Jerusalem.",
+          v: [
+            [
+              "4:5",
+              "For I have laid upon thee the years of their iniquity, according to the number of the days, three hundred and ninety days: so shalt thou bear the iniquity of the house of Israel.",
+            ],
+          ],
+          ref: "Ezekiel 4:1–8",
+          chap: "Ezekiel+4",
+          note: "Read what he was given to eat, in verses 9–17.",
+        },
+        {
+          t: "Scholar",
+          q: "Who was chosen by lot to take Judas’s place among the twelve?",
+          o: ["Barsabas", "Matthias", "Silas", "Apollos"],
+          a: 1,
+          exp: "Matthias. Joseph called Barsabas was the other candidate.",
+          v: [
+            [
+              "1:26",
+              "And they gave forth their lots; and the lot fell upon Matthias; and he was numbered with the eleven apostles.",
+            ],
+          ],
+          ref: "Acts 1:15–26",
+          chap: "Acts+1",
+          note: "Peter’s reasoning starts from the Psalms (1:20).",
+        },
+        {
+          t: "Few People Know This",
+          q: "Which prophet’s one-chapter book is entirely about Edom?",
+          o: ["Nahum", "Obadiah", "Habakkuk", "Haggai"],
+          a: 1,
+          exp: "Obadiah, the shortest book of the Old Testament, with 21 verses.",
+          v: [
+            [
+              "1:1",
+              "The vision of Obadiah. Thus saith the Lord GOD concerning Edom; We have heard a rumour from the LORD.",
+            ],
+          ],
+          ref: "Obadiah 1",
+          chap: "Obadiah+1",
+          note: "It takes two minutes to read. Edom is also where Doeg came from.",
+        },
+        {
+          t: "Scholar",
+          q: "Which prophet was the Ethiopian official reading in his chariot when Philip met him?",
+          o: ["Isaiah", "Jeremiah", "Daniel", "Jonah"],
+          a: 0,
+          exp: "Isaiah. The passage was about the suffering servant, and Philip started there to tell him about Jesus.",
+          v: [
+            [
+              "8:28",
+              "Was returning, and sitting in his chariot read Esaias the prophet.",
+            ],
+          ],
+          ref: "Acts 8:26–40",
+          chap: "Acts+8",
+          note: "“Esaias” is the Greek form of Isaiah. The passage is Isaiah 53.",
+        },
+        {
+          t: "Scholar",
+          q: "Which prophet told David, “Thou art the man”?",
+          o: ["Gad", "Nathan", "Samuel", "Ahijah"],
+          a: 1,
+          exp: "Nathan, with a story about a rich man and a poor man’s lamb, after David took Bathsheba.",
+          v: [["12:7", "And Nathan said to David, Thou art the man."]],
+          ref: "2 Samuel 12:1–15",
+          chap: "2+Samuel+12",
+          note: "Psalm 51 is David’s prayer afterward.",
+        },
+        {
+          t: "Few People Know This",
+          q: "In how many days was the wall of Jerusalem rebuilt under Nehemiah?",
+          o: ["Forty", "Fifty-two", "Seventy", "Twelve"],
+          a: 1,
+          exp: "Fifty-two days, despite threats from Sanballat and Tobiah.",
+          v: [
+            [
+              "6:15",
+              "So the wall was finished in the twenty and fifth day of the month Elul, in fifty and two days.",
+            ],
+          ],
+          ref: "Nehemiah 6:15",
+          chap: "Nehemiah+6",
+          note: "Half the men worked while the other half held spears (4:16).",
+        },
+        {
+          t: "Scholar",
+          q: "Which prophet raised the widow of Zarephath’s son?",
+          o: ["Elisha", "Elijah", "Isaiah", "Samuel"],
+          a: 1,
+          exp: "Elijah. Elisha later raised the Shunammite’s son, which is a separate story.",
+          v: [
+            [
+              "17:22",
+              "And the LORD heard the voice of Elijah; and the soul of the child came into him again, and he revived.",
+            ],
+          ],
+          ref: "1 Kings 17:17–24",
+          chap: "1+Kings+17",
+          note: "Elisha’s account is in 2 Kings 4.",
+        },
+        {
+          t: "Scholar",
+          q: "Whose house was the first Gentile household to receive the Holy Spirit in Acts?",
+          o: ["Sergius Paulus", "Cornelius", "Lydia", "Philemon"],
+          a: 1,
+          exp: "Cornelius, a centurion at Caesarea. Peter went to him after a vision of unclean animals.",
+          v: [
+            [
+              "10:1",
+              "There was a certain man in Caesarea called Cornelius, a centurion of the band called the Italian band.",
+            ],
+          ],
+          ref: "Acts 10",
+          chap: "Acts+10",
+          note: "Peter’s report to Jerusalem is in Acts 11.",
+        },
+        {
+          t: "Scholar",
+          q: "Which two people in Scripture were taken up by God without dying?",
+          o: [
+            "Enoch and Elijah",
+            "Elijah and Elisha",
+            "Moses and Elijah",
+            "Enoch and Noah",
+          ],
+          a: 0,
+          exp: "Enoch (Genesis 5) and Elijah (2 Kings 2). Moses died on Mount Nebo.",
+          v: [
+            [
+              "5:24",
+              "And Enoch walked with God: and he was not; for God took him.",
+            ],
+          ],
+          ref: "Genesis 5:24; 2 Kings 2:11",
+          chap: "Genesis+5",
+          note: "Hebrews 11:5 says of Enoch that he was taken so as not to see death.",
+        },
+        {
+          t: "Few People Know This",
+          q: "Which man was killed when a woman dropped a millstone on his head?",
+          o: ["Sisera", "Abimelech", "Eglon", "Agag"],
+          a: 1,
+          exp: "Abimelech, the son of Gideon, at Thebez. He told his armor-bearer to finish him so that no one could say a woman killed him.",
+          v: [
+            [
+              "9:53",
+              "And a certain woman cast a piece of a millstone upon Abimelech’s head, and all to brake his skull.",
+            ],
+          ],
+          ref: "Judges 9:50–57",
+          chap: "Judges+9",
+          note: "Sisera is the one killed with a tent peg.",
+        },
+        {
+          t: "Scholar",
+          q: "Whom did Jesus call “an Israelite indeed, in whom is no guile”?",
+          o: ["Philip", "Nathanael", "Andrew", "Thomas"],
+          a: 1,
+          exp: "Nathanael, brought to Jesus by Philip. He had asked whether anything good could come out of Nazareth.",
+          v: [
+            [
+              "1:47",
+              "Jesus saw Nathanael coming to him, and saith of him, Behold an Israelite indeed, in whom is no guile!",
+            ],
+          ],
+          ref: "John 1:43–51",
+          chap: "John+1",
+          note: "Nathanael is not named in the other Gospels.",
+        },
+        {
+          t: "Few People Know This",
+          q: "Which prophetess did Josiah’s officials consult about the book found in the temple?",
+          o: ["Deborah", "Huldah", "Anna", "Noadiah"],
+          a: 1,
+          exp: "Huldah, who lived in the second quarter of Jerusalem. She confirmed that judgment was coming, but not in Josiah’s days.",
+          v: [
+            [
+              "22:14",
+              "So Hilkiah the priest, and Ahikam, and Achbor, and Shaphan, and Asahiah, went unto Huldah the prophetess.",
+            ],
+          ],
+          ref: "2 Kings 22:14–20",
+          chap: "2+Kings+22",
+          note: "Josiah appears in an earlier question in this set.",
+        },
+        {
+          t: "Few People Know This",
+          q: "How many years did Methuselah live?",
+          o: ["912", "930", "969", "777"],
+          a: 2,
+          exp: "969, the longest life recorded in Scripture. He died in the year of the flood, by most counts.",
+          v: [
+            [
+              "5:27",
+              "And all the days of Methuselah were nine hundred sixty and nine years: and he died.",
+            ],
+          ],
+          ref: "Genesis 5:21–27",
+          chap: "Genesis+5",
+          note: "Adam lived 930 years. Lamech, his son, lived 777.",
+        },
+      ];
+      const $ = (id) => document.getElementById(id);
+      function theme(t) {
+        document.documentElement.dataset.theme = t;
+        document
+          .querySelectorAll(".themes button")
+          .forEach((b) => b.setAttribute("aria-pressed", b.dataset.t === t));
+        try {
+          localStorage.setItem("cv-theme", t);
+        } catch (e) {}
+      }
+      document
+        .querySelectorAll(".themes button")
+        .forEach((b) => (b.onclick = () => theme(b.dataset.t)));
+      let _t = "sepia";
+      try {
+        _t = localStorage.getItem("cv-theme") || "sepia";
+      } catch (e) {}
+      theme(_t);
+      const st = { i: 0, score: 0, done: false, set: [], ans: [] };
+      const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      const L = ["A", "B", "C", "D"];
+      const g = (r) =>
+        `https://www.biblegateway.com/passage/?search=${encodeURIComponent(r)}&version=KJV`;
+      const vq = (a) =>
+        a
+          .map(
+            (x) =>
+              `<blockquote class='verse' style='margin-left:0'><span class='ref' style='font-style:normal'>${esc(x[0])} (KJV)</span><br>${esc(x[1])}</blockquote>`,
+          )
+          .join("");
+      const tg = (t) =>
+        `<span class='tg${t.tag === "C" ? " c" : ""}'>${t.tag === "C" ? "Clear in Scripture" : "Christians Disagree"}</span>`;
+      const DISC = `This is the opinion of the person who made this site, from what they have read in the Bible. It is one view among those set out above, not a ruling. Read the passages and decide for yourself.`;
+      const opn = (o) =>
+        `<section class='opn'><h2>Editor’s view</h2><p class='ref'>Opinion, not the Bible’s own words</p><p>${esc(o.text)}</p>${vq(o.verses)}<p class='ref'>${esc(DISC)}</p></section>`;
+      const T = [
+        {
+          id: "saints",
+          title: "Praying to Mary and the saints",
+          tag: "D",
+          sum: "Asking Mary and believers who have died to pray for you.",
+          practice: `Many Christians ask Mary and other saints who have died to pray to God for them, the way they might ask a friend to pray.`,
+          support: `Those who do this say the saints are alive in Christ and still part of his body, and that asking for their prayers is not worship. They point to the “cloud of witnesses” and to the elders in Revelation who carry the prayers of the saints.`,
+          verses: [
+            [
+              "Deuteronomy 18:10–12",
+              `There shall not be found among you any one that maketh his son or his daughter to pass through the fire, or that useth divination, or an observer of times, or an enchanter, or a witch, Or a charmer, or a consulter with familiar spirits, or a wizard, or a necromancer. For all that do these things are an abomination unto the LORD: and because of these abominations the LORD thy God doth drive them out from before thee.`,
+            ],
+            [
+              "Isaiah 8:19",
+              `And when they shall say unto you, Seek unto them that have familiar spirits, and unto wizards that peep, and that mutter: should not a people seek unto their God? for the living to the dead?`,
+            ],
+            [
+              "Luke 16:26",
+              `And beside all this, between us and you there is a great gulf fixed: so that they which would pass from hence to you cannot; neither can they pass to us, that would come from thence.`,
+            ],
+            [
+              "1 Timothy 2:5",
+              `For there is one God, and one mediator between God and men, the man Christ Jesus;`,
+            ],
+          ],
+          says: `Those who object read these as forbidding contact with the dead, describing a fixed gulf between the living and the dead, and naming Christ as the one mediator.`,
+          reply: `Those who pray to the saints say Deuteronomy forbids seeking secret knowledge from the dead, which is not what they are doing. They say Christ’s role as mediator is not replaced, since Christians already ask each other to pray, and the saints are not dead but alive to God.`,
+          rverses: [
+            [
+              "Hebrews 12:1",
+              `Wherefore seeing we also are compassed about with so great a cloud of witnesses, let us lay aside every weight, and the sin which doth so easily beset us, and let us run with patience the race that is set before us,`,
+            ],
+            [
+              "Revelation 5:8",
+              `And when he had taken the book, the four beasts and four and twenty elders fell down before the Lamb, having every one of them harps, and golden vials full of odours, which are the prayers of saints.`,
+            ],
+          ],
+          read: [
+            "Deuteronomy 18",
+            "Isaiah 8",
+            "Luke 16",
+            "1 Timothy 2",
+            "Hebrews 12",
+            "Revelation 5",
+          ],
+          op: {
+            text: `If Christ came to be the mediator between God and people, then the point of his coming was that we could go to God through him. Asking Mary to pray for us seems to me to put someone between us and the one mediator we already have. I honor Mary. But Jesus himself said that whoever does the will of his Father is his mother and his brethren, so his family is open to everyone who belongs to him, and we are free to come to him directly.`,
+            verses: [
+              [
+                "Matthew 12:48–50",
+                `But he answered and said unto him that told him, Who is my mother? and who are my brethren? And he stretched forth his hand toward his disciples, and said, Behold my mother and my brethren! For whosoever shall do the will of my Father which is in heaven, the same is my brother, and sister, and mother.`,
+              ],
+              [
+                "Hebrews 4:16",
+                `Let us therefore come boldly unto the throne of grace, that we may obtain mercy, and find grace to help in time of need.`,
+              ],
+            ],
+          },
+        },
+        {
+          id: "relics",
+          title: "Relics of the apostles",
+          tag: "D",
+          sum: "Keeping and honoring the bones or belongings of saints.",
+          practice: `Some churches keep and venerate the bones, clothing or belongings of apostles and saints.`,
+          support: `Supporters say honoring a relic honors the saint and, through the saint, God, and that God has used physical things before.`,
+          verses: [
+            [
+              "2 Kings 18:4",
+              `He removed the high places, and brake the images, and cut down the groves, and brake in pieces the brasen serpent that Moses had made: for unto those days the children of Israel did burn incense to it: and he called it Nehushtan.`,
+            ],
+            [
+              "Deuteronomy 34:6",
+              `And he buried him in a valley in the land of Moab, over against Bethpeor: but no man knoweth of his sepulchre unto this day.`,
+            ],
+            [
+              "Acts 14:11–15",
+              `And when the people saw what Paul had done, they lifted up their voices, saying in the speech of Lycaonia, The gods are come down to us in the likeness of men. And they called Barnabas, Jupiter; and Paul, Mercurius, because he was the chief speaker. Then the priest of Jupiter, which was before their city, brought oxen and garlands unto the gates, and would have done sacrifice with the people. Which when the apostles, Barnabas and Paul, heard of, they rent their clothes, and ran in among the people, crying out, And saying, Sirs, why do ye these things? We also are men of like passions with you, and preach unto you that ye should turn from these vanities unto the living God, which made heaven, and earth, and the sea, and all things that are therein.`,
+            ],
+          ],
+          says: `Hezekiah destroyed an object that had become an idol, Moses’s grave was kept unknown, and Paul and Barnabas refused honor meant for God. Critics read these as warnings about reverence that drifts into worship.`,
+          reply: `Defenders say these passages warn against worship, not respect. They point to two places where God worked through physical remains or objects.`,
+          rverses: [
+            [
+              "2 Kings 13:21",
+              `And it came to pass, as they were burying a man, that, behold, they spied a band of men; and they cast the man into the sepulchre of Elisha: and when the man was let down, and touched the bones of Elisha, he revived, and stood up on his feet.`,
+            ],
+            [
+              "Acts 19:11–12",
+              `And God wrought special miracles by the hands of Paul: So that from his body were brought unto the sick handkerchiefs or aprons, and the diseases departed from them, and the evil spirits went out of them.`,
+            ],
+          ],
+          read: [
+            "2 Kings 18",
+            "2 Kings 13",
+            "Deuteronomy 34",
+            "Acts 14",
+            "Acts 19",
+          ],
+          op: {
+            text: `Waiting until someone has died before calling them a saint does not seem right to me. Paul wrote his letters to living Christians and called them saints. To me, sainthood is rooted in belonging to Christ, not in being recognized by other people. If every believer is a saint, then setting apart the bones or blood of a few of them is something I do not see in Scripture.`,
+            verses: [
+              [
+                "Romans 1:7",
+                `To all that be in Rome, beloved of God, called to be saints: Grace to you and peace from God our Father, and the Lord Jesus Christ.`,
+              ],
+              [
+                "1 Corinthians 1:2",
+                `Unto the church of God which is at Corinth, to them that are sanctified in Christ Jesus, called to be saints, with all that in every place call upon the name of Jesus Christ our Lord, both theirs and ours:`,
+              ],
+              [
+                "Ephesians 1:1",
+                `Paul, an apostle of Jesus Christ by the will of God, to the saints which are at Ephesus, and to the faithful in Christ Jesus:`,
+              ],
+            ],
+          },
+        },
+        {
+          id: "father",
+          title: "Calling pastors “Father”",
+          tag: "D",
+          sum: "Using the title Father for priests and pastors.",
+          practice: `In some churches a priest or pastor is addressed as “Father.”`,
+          support: `Defenders say Jesus is warning against pride and titles that put someone in God’s place, not forbidding the word. They note that Scripture itself speaks of fathers in the faith.`,
+          verses: [
+            [
+              "Matthew 23:9",
+              `And call no man your father upon the earth: for one is your Father, which is in heaven.`,
+            ],
+          ],
+          says: `Jesus says this in a passage about titles that lift some people above others. Verses 8 and 10 name teacher and master in the same way.`,
+          reply: `Those who use the title say Paul calls himself a spiritual father to the Corinthians, and that Stephen addresses the council as “fathers” in Acts 7:2. They say the point is humility, not the word.`,
+          rverses: [
+            [
+              "1 Corinthians 4:15",
+              `For though ye have ten thousand instructers in Christ, yet have ye not many fathers: for in Christ Jesus I have begotten you through the gospel.`,
+            ],
+          ],
+          read: ["Matthew 23", "1 Corinthians 4", "Acts 7"],
+        },
+        {
+          id: "curses",
+          title: "Generational curses",
+          tag: "D",
+          sum: "The idea that a family can carry a curse from an ancestor.",
+          practice: `Some teach that a family may be under a curse because of an ancestor’s sin, and that it must be broken through prayer or ministry.`,
+          support: `Supporters say Scripture shows consequences passing down in families, and that naming and praying through harmful patterns is spiritual care.`,
+          verses: [
+            [
+              "Ezekiel 18:20",
+              `The soul that sinneth, it shall die. The son shall not bear the iniquity of the father, neither shall the father bear the iniquity of the son: the righteousness of the righteous shall be upon him, and the wickedness of the wicked shall be upon him.`,
+            ],
+            [
+              "Galatians 3:13",
+              `Christ hath redeemed us from the curse of the law, being made a curse for us: for it is written, Cursed is every one that hangeth on a tree:`,
+            ],
+          ],
+          says: `Ezekiel says a child does not bear a father’s iniquity, and Paul says Christ has taken the curse of the law.`,
+          reply: `Those who teach it do not usually say a believer is condemned for another’s sin. They say Exodus 20:5 shows effects reaching later generations, and that Christ’s work is what breaks them.`,
+          rverses: [
+            [
+              "Exodus 20:5",
+              `Thou shalt not bow down thyself to them, nor serve them: for I the LORD thy God am a jealous God, visiting the iniquity of the fathers upon the children unto the third and fourth generation of them that hate me;`,
+            ],
+          ],
+          read: ["Ezekiel 18", "Galatians 3", "Exodus 20"],
+        },
+        {
+          id: "tithing",
+          title: "Tithing as law for Christians",
+          tag: "D",
+          sum: "Whether Christians are bound to give a tenth.",
+          practice: `Some churches teach that every Christian must give a tenth of income, and that withholding it brings a curse.`,
+          support: `Supporters say tithing began with Abraham before the law, and that Jesus told the Pharisees not to leave the tithe undone.`,
+          verses: [
+            [
+              "Malachi 3:10",
+              `Bring ye all the tithes into the storehouse, that there may be meat in mine house, and prove me now herewith, saith the LORD of hosts, if I will not open you the windows of heaven, and pour you out a blessing, that there shall not be room enough to receive it.`,
+            ],
+            [
+              "2 Corinthians 9:7",
+              `Every man according as he purposeth in his heart, so let him give; not grudgingly, or of necessity: for God loveth a cheerful giver.`,
+            ],
+          ],
+          says: `Malachi speaks to Israel under the covenant. Paul tells Christians to give as each has decided, cheerfully and without compulsion.`,
+          reply: `Those who teach the tithe say Paul’s words set the spirit of giving and do not cancel the tenth, and that a tenth is a sound starting point for a believer.`,
+          rverses: [
+            [
+              "Matthew 23:23",
+              `Woe unto you, scribes and Pharisees, hypocrites! for ye pay tithe of mint and anise and cummin, and have omitted the weightier matters of the law, judgment, mercy, and faith: these ought ye to have done, and not to leave the other undone.`,
+            ],
+          ],
+          read: ["Malachi 3", "2 Corinthians 9", "Matthew 23", "Genesis 14"],
+        },
+        {
+          id: "worship",
+          title: "Worshipping pastors and prophets",
+          tag: "C",
+          sum: "Bowing to or elevating a human leader.",
+          practice: `Treating a pastor or prophet as beyond correction, or praising them as if they held divine authority.`,
+          support: `Few defend this outright. Some say leaders should be honored and their words weighed seriously.`,
+          verses: [
+            [
+              "Acts 10:25–26",
+              `And as Peter was coming in, Cornelius met him, and fell down at his feet, and worshipped him. But Peter took him up, saying, Stand up; I myself also am a man.`,
+            ],
+          ],
+          says: `Peter, an apostle, refuses worship at once and says he is a man.`,
+          reply: `Those who honor leaders agree worship belongs to God alone. They say respect is different, and point to 1 Thessalonians 5:12–13, which asks believers to esteem those who labor among them.`,
+          read: ["Acts 10", "Acts 14", "1 Thessalonians 5"],
+        },
+        {
+          id: "seed",
+          title: "Paying for prophecy or “seed” miracles",
+          tag: "C",
+          sum: "Giving money in exchange for a miracle, word or blessing.",
+          practice: `Teaching that a gift of money, called a seed, will bring a miracle, a prophecy or a blessing in return.`,
+          support: `Supporters say giving is an act of faith and that Scripture links generosity with blessing.`,
+          verses: [
+            [
+              "Acts 8:18–23",
+              `And when Simon saw that through laying on of the apostles’ hands the Holy Ghost was given, he offered them money, Saying, Give me also this power, that on whomsoever I lay hands, he may receive the Holy Ghost. But Peter said unto him, Thy money perish with thee, because thou hast thought that the gift of God may be purchased with money. Thou hast neither part nor lot in this matter: for thy heart is not right in the sight of God. Repent therefore of this wickedness, and pray God, if perhaps the thought of thine heart may be forgiven thee. For I perceive that thou art in the gall of bitterness, and in the bond of iniquity.`,
+            ],
+          ],
+          says: `Simon offered money for the power to give the Spirit, and Peter rebuked him: the gift of God cannot be bought.`,
+          reply: `Those who teach seed giving say they are not buying a gift but sowing in faith, and that God honors generosity. Critics reply that Simon is the plain case of putting a price on God’s gift.`,
+          read: ["Acts 8", "Luke 6", "Malachi 3"],
+        },
+        {
+          id: "selfhelp",
+          title: "“God helps those who help themselves”",
+          tag: "C",
+          sum: "A famous saying that is not in the Bible.",
+          practice: `The saying is often quoted as if it were a verse.`,
+          support: `People say the Bible values effort, and it does call for diligence and work.`,
+          verses: [
+            [
+              "Psalm 121:2",
+              `My help cometh from the LORD, which made heaven and earth.`,
+            ],
+            [
+              "Ephesians 2:8–9",
+              `For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast.`,
+            ],
+          ],
+          says: `These exact words are not in Scripture. The Bible says help comes from the LORD and salvation is a gift.`,
+          reply: `Those who defend the saying say its spirit is biblical: Scripture praises work and warns against idleness. The difference is that the words are not a verse.`,
+          rverses: [
+            [
+              "2 Thessalonians 3:10",
+              `For even when we were with you, this we commanded you, that if any would not work, neither should he eat.`,
+            ],
+          ],
+          read: ["Psalm 121", "Ephesians 2", "2 Thessalonians 3", "Proverbs 6"],
+        },
+      ];
+      function topics() {
+        $("tlist").innerHTML = T.map(
+          (t) =>
+            `<li><span class='t'><a href='#topic-${t.id}' style='border:0;color:var(--ink)'>${esc(t.title)}</a></span><span class='d'>${esc(t.sum)}</span>${tg(t)}</li>`,
+        ).join("");
+      }
+      function topic(h) {
+        const t = T.find((x) => "topic-" + x.id === h);
+        if (!t) {
+          location.hash = "#topics";
+          return;
+        }
+        $("tbody").innerHTML =
+          `<p><a href='#topics'>All topics</a></p><h1>${esc(t.title)}</h1><p>${tg(t)}</p><h2>The practice</h2><p>${esc(t.practice)}</p><h2>What people say in support</h2><p>${esc(t.support)}</p><h2>What Scripture says</h2>${vq(t.verses)}<p>${esc(t.says)}</p><h2>What the other side replies</h2><p>${esc(t.reply)}</p>${vq(t.rverses || [])}${t.op ? opn(t.op) : ""}<h2>Read it yourself</h2><ul class='sum'>${t.read.map((r) => `<li><a href='${g(r)}' target='_blank' rel='noopener'>${esc(r)}</a></li>`).join("")}</ul>`;
+      }
+      const PLAN = [
+        [
+          "Monday",
+          ["Genesis 1", "Genesis 2", "Genesis 3"],
+          "Behind the Genesis questions.",
+        ],
+        ["Tuesday", ["Mark 1", "Mark 2"], "Behind the Mark questions."],
+        ["Wednesday", ["Luke 2", "Luke 10"], "Behind the Luke questions."],
+        [
+          "Thursday",
+          ["Acts 8", "Acts 10"],
+          "For the topics on paid prophecy and worshipping leaders.",
+        ],
+        [
+          "Friday",
+          ["Matthew 23", "1 Corinthians 4"],
+          "For the topic on calling pastors Father.",
+        ],
+        [
+          "Saturday",
+          ["Ezekiel 18", "Galatians 3"],
+          "For the topic on generational curses.",
+        ],
+        [
+          "Sunday",
+          ["Psalm 121", "Ephesians 2"],
+          "For the saying that is not in the Bible.",
+        ],
+      ];
+      function readPlan() {
+        const d = (new Date().getDay() + 6) % 7;
+        $("rbody").innerHTML = PLAN.map(
+          (p, i) =>
+            `<li class='${i === d ? "today" : ""}'><span class='ref'>${p[0]}${i === d ? " (today)" : ""}</span><br>${p[1].map((r) => `<a href='${g(r)}' target='_blank' rel='noopener'>${r}</a>`).join(", ")}<br><em>${p[2]}</em></li>`,
+        ).join("");
+      }
+      function view() {
+        const h = (location.hash || "#home").slice(1);
+        let v = ["home", "trivia", "topics", "read"].includes(h)
+          ? h
+          : h.startsWith("topic-")
+            ? "topic"
+            : "home";
+        if (v === "topic") topic(h);
+        document
+          .querySelectorAll("[data-view]")
+          .forEach((e) => e.classList.toggle("on", e.dataset.view === v));
+        document
+          .querySelectorAll("[data-nav]")
+          .forEach((a) =>
+            a.toggleAttribute(
+              "aria-current",
+              a.dataset.nav === (v === "topic" ? "topics" : v),
+            ),
+          );
+        window.scrollTo(0, 0);
+      }
+      function streak(bump) {
+        let s = { n: 0, d: "" };
+        try {
+          s = JSON.parse(localStorage.getItem("cv-streak")) || s;
+        } catch (e) {}
+        const today = new Date().toDateString();
+        if (bump && s.d !== today) {
+          const y = new Date(Date.now() - 864e5).toDateString();
+          s.n = s.d === y ? s.n + 1 : 1;
+          s.d = today;
+          try {
+            localStorage.setItem("cv-streak", JSON.stringify(s));
+          } catch (e) {}
+        }
+        $("streak").textContent = s.n
+          ? "Streak: " + s.n + (s.n === 1 ? " day" : " days")
+          : "No streak yet";
+      }
+      function show() {
+        const Q = QS[st.set[st.i]];
+        st.done = false;
+        $("tier").textContent = Q.t;
+        $("count").textContent =
+          "Question " + (st.i + 1) + " of " + st.set.length;
+        $("score").textContent = "Right: " + st.score;
+        $("qno").textContent = st.i + 1 + ".";
+        $("qtext").textContent = Q.q;
+        $("answer").hidden = true;
+        $("mref").textContent = Q.ref;
+        $("mnote").textContent = Q.note;
+        $("opts").innerHTML = "";
+        Q.o.forEach((t, k) => {
+          const li = document.createElement("li"),
+            b = document.createElement("button");
+          b.className = "opt";
+          b.type = "button";
+          b.innerHTML = '<span class="k">' + L[k] + ".</span><span></span>";
+          b.lastChild.textContent = t;
+          b.onclick = () => pick(k);
+          li.appendChild(b);
+          $("opts").appendChild(li);
+        });
+        $("next").textContent =
+          st.i < st.set.length - 1 ? "Next question" : "See summary";
+        streak(false);
+      }
+      function pick(k) {
+        if (st.done) return;
+        st.done = true;
+        const Q = QS[st.set[st.i]],
+          ok = k === Q.a;
+        st.ans[st.i] = k;
+        if (ok) st.score++;
+        document.querySelectorAll(".opt").forEach((b, j) => {
+          b.disabled = true;
+          if (j === Q.a) b.classList.add("right");
+          else if (j === k) b.classList.add("wrong");
+        });
+        const s = $("stamp");
+        s.className = "stamp" + (ok ? "" : " miss");
+        s.textContent = ok ? "Correct" : "Not quite";
+        $("atitle").textContent = "The answer: " + Q.o[Q.a] + ".";
+        $("aexp").textContent = Q.exp;
+        $("averse").innerHTML =
+          Q.v
+            .map((x) => "<sup>" + x[0] + "</sup>" + x[1].replace(/&/g, "&amp;"))
+            .join(" ") +
+          '<br><span class="ref" style="font-style:normal">' +
+          Q.ref +
+          " (KJV)</span>";
+        $("chap").href =
+          "https://www.biblegateway.com/passage/?search=" +
+          Q.chap +
+          "&version=KJV";
+        $("answer").hidden = false;
+        $("score").textContent = "Right: " + st.score;
+        streak(true);
+        $("answer").scrollIntoView({
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "auto"
+            : "smooth",
+          block: "nearest",
+        });
+      }
+      $("next").onclick = () => {
+        if (st.i < st.set.length - 1) {
+          st.i++;
+          show();
+          $("qtext").focus();
+        } else {
+          summary();
+        }
+      };
+      const TN = { B: "Beginner", S: "Scholar", F: "Few People Know This" };
+      const BATCH = (r) =>
+        r.map((x) => ({
+          t: TN[x[0]],
+          q: x[1],
+          o: x[2],
+          a: x[3],
+          exp: x[4],
+          v: [[x[5], x[6]]],
+          ref: x[7],
+          chap: x[8],
+          note: "",
+        }));
+      QS.push(
+        ...BATCH([
+          [
+            "B",
+            "On which day of creation did God make humankind?",
+            ["Fourth", "Fifth", "Sixth", "Seventh"],
+            2,
+            "The sixth day, after the land animals. The seventh was the day of rest.",
+            "1:31",
+            "And God saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.",
+            "Genesis 1:24–31",
+            "Genesis+1",
+          ],
+          [
+            "S",
+            "Which of these is NOT named as one of the four rivers flowing from Eden?",
+            ["Pison", "Gihon", "Jordan", "Euphrates"],
+            2,
+            "The four were Pison, Gihon, Hiddekel (Tigris) and Euphrates. The Jordan is not among them.",
+            "2:10",
+            "And a river went out of Eden to water the garden; and from thence it was parted, and became into four heads.",
+            "Genesis 2:10–14",
+            "Genesis+2",
+          ],
+          [
+            "S",
+            "Why did the Lord set a mark on Cain?",
+            [
+              "So that no one who found him would kill him",
+              "So Abel\u2019s family would know him",
+              "To show he had been forgiven by Adam",
+              "So his crops would grow",
+            ],
+            0,
+            "The mark was a protection, not a brand of shame. Cain feared being killed.",
+            "4:15",
+            "And the LORD set a mark upon Cain, lest any finding him should kill him.",
+            "Genesis 4:8–16",
+            "Genesis+4",
+          ],
+          [
+            "F",
+            "Who is called “a mighty hunter before the LORD”?",
+            ["Esau", "Nimrod", "Cush", "Lamech"],
+            1,
+            "Nimrod, a grandson of Ham, whose kingdom began at Babel.",
+            "10:9",
+            "He was a mighty hunter before the LORD: wherefore it is said, Even as Nimrod the mighty hunter before the LORD.",
+            "Genesis 10:8–12",
+            "Genesis+10",
+          ],
+          [
+            "F",
+            "How many days did the flood waters prevail on the earth before they began to fall?",
+            [
+              "Forty",
+              "One hundred",
+              "One hundred and fifty",
+              "Three hundred and sixty-five",
+            ],
+            2,
+            "The rain fell forty days, but the waters prevailed a hundred and fifty days.",
+            "7:24",
+            "And the waters prevailed upon the earth an hundred and fifty days.",
+            "Genesis 7:11–24",
+            "Genesis+7",
+          ],
+          [
+            "B",
+            "What did God give as the sign of his promise never to flood the earth again?",
+            ["A rainbow", "A dove", "An altar", "A star"],
+            0,
+            "The bow in the cloud, a sign of the covenant with all living creatures.",
+            "9:13",
+            "I do set my bow in the cloud, and it shall be for a token of a covenant between me and the earth.",
+            "Genesis 9:8–17",
+            "Genesis+9",
+          ],
+          [
+            "S",
+            "What reason did the builders of Babel give for building the tower?",
+            [
+              "To make a name for themselves and avoid being scattered",
+              "To escape another flood",
+              "To worship the sun",
+              "To defend themselves from Egypt",
+            ],
+            0,
+            "They wanted a name and to stay together, which God did not allow.",
+            "11:4",
+            "And they said, Go to, let us build us a city and a tower, whose top may reach unto heaven; and let us make us a name, lest we be scattered abroad upon the face of the whole earth.",
+            "Genesis 11:1–9",
+            "Genesis+11",
+          ],
+          [
+            "S",
+            "From which city did Terah’s family set out for Canaan before settling at Haran?",
+            ["Ur of the Chaldees", "Babylon", "Nineveh", "Shechem"],
+            0,
+            "Ur of the Chaldees. They stopped at Haran, and Terah died there.",
+            "11:31",
+            "And Terah took Abram his son, and Lot the son of Haran his son’s son, and Sarai his daughter in law, and they went forth with them from Ur of the Chaldees, to go into the land of Canaan; and they came unto Haran, and dwelt there.",
+            "Genesis 11:27–32",
+            "Genesis+11",
+          ],
+          [
+            "F",
+            "Who was the king of Salem who brought out bread and wine to Abram?",
+            ["Abimelech", "Melchizedek", "Eliezer", "Lot"],
+            1,
+            "Melchizedek, priest of God Most High. Hebrews 7 comes back to him.",
+            "14:18",
+            "And Melchizedek king of Salem brought forth bread and wine: and he was the priest of the most high God.",
+            "Genesis 14:17–20",
+            "Genesis+14",
+          ],
+          [
+            "F",
+            "How old was Abram when Hagar bore Ishmael?",
+            ["Seventy-five", "Eighty-six", "Ninety-nine", "One hundred"],
+            1,
+            "Eighty-six. He was ninety-nine when circumcision was given, and a hundred at Isaac’s birth.",
+            "16:16",
+            "And Abram was fourscore and six years old, when Hagar bare Ishmael to Abram.",
+            "Genesis 16:1–16",
+            "Genesis+16",
+          ],
+          [
+            "B",
+            "What name did God tell Abraham to give the son Sarah would bear?",
+            ["Ishmael", "Isaac", "Jacob", "Esau"],
+            1,
+            "Isaac, whose name is linked to laughter.",
+            "17:19",
+            "And God said, Sarah thy wife shall bear thee a son indeed; and thou shalt call his name Isaac.",
+            "Genesis 17:15–19",
+            "Genesis+17",
+          ],
+          [
+            "S",
+            "When Abraham pleaded for Sodom, what was the smallest number of righteous people he asked about?",
+            ["Five", "Ten", "Twenty", "Thirty"],
+            1,
+            "He went from fifty down to ten, and God agreed to spare the city for ten.",
+            "18:32",
+            "And he said, Oh let not the Lord be angry, and I will speak yet but this once: Peradventure ten shall be found there. And he said, I will not destroy it for ten’s sake.",
+            "Genesis 18:22–33",
+            "Genesis+18",
+          ],
+          [
+            "S",
+            "When Isaac asked where the lamb for the offering was, what did Abraham say?",
+            [
+              "God will provide himself a lamb",
+              "We will find one on the mountain",
+              "Wait here with the servants",
+              "The Lord has forgotten us",
+            ],
+            0,
+            "A reply of trust. The ram caught in a thicket was the answer.",
+            "22:8",
+            "And Abraham said, My son, God will provide himself a lamb for a burnt offering: so they went both of them together.",
+            "Genesis 22:1–14",
+            "Genesis+22",
+          ],
+          [
+            "S",
+            "To which region did Abraham send his servant to find a wife for Isaac?",
+            ["Egypt", "Mesopotamia", "Moab", "Philistia"],
+            1,
+            "Mesopotamia, to the city of Nahor, where Rebekah was found at the well.",
+            "24:10",
+            "And the servant took ten camels of the camels of his master, and departed; for all the goods of his master were in his hand: and he arose, and went to Mesopotamia, unto the city of Nahor.",
+            "Genesis 24",
+            "Genesis+24",
+          ],
+          [
+            "S",
+            "What did Jacob give Esau in exchange for his birthright?",
+            ["A flock of sheep", "Bread and lentil stew", "A field", "A robe"],
+            1,
+            "Bread and pottage of lentils. The text says Esau despised his birthright.",
+            "25:34",
+            "Then Jacob gave Esau bread and pottage of lentiles; and he did eat and drink, and rose up, and went his way: thus Esau despised his birthright.",
+            "Genesis 25:27–34",
+            "Genesis+25",
+          ],
+          [
+            "S",
+            "What did Jacob name the place where he dreamed of a ladder to heaven?",
+            ["Peniel", "Bethel", "Mizpah", "Gilgal"],
+            1,
+            "Bethel, “house of God.” The city had been called Luz.",
+            "28:19",
+            "And he called the name of that place Bethel: but the name of that city was called Luz at the first.",
+            "Genesis 28:10–22",
+            "Genesis+28",
+          ],
+          [
+            "S",
+            "In total, how many years did Jacob work for Laban to marry Leah and Rachel?",
+            ["Seven", "Fourteen", "Twenty", "Twenty-one"],
+            1,
+            "Seven years for each, though he got Leah first by Laban’s trick.",
+            "29:20",
+            "And Jacob served seven years for Rachel; and they seemed unto him but a few days, for the love he had to her.",
+            "Genesis 29:15–30",
+            "Genesis+29",
+          ],
+          [
+            "S",
+            "What did Jacob name the place where he wrestled with a man until daybreak?",
+            ["Bethel", "Peniel", "Mizpah", "Gilgal"],
+            1,
+            "Peniel, “the face of God.” There he was renamed Israel.",
+            "32:30",
+            "And Jacob called the name of the place Peniel: for I have seen God face to face, and my life is preserved.",
+            "Genesis 32:22–32",
+            "Genesis+32",
+          ],
+          [
+            "F",
+            "Which brother proposed selling Joseph to the Ishmeelites?",
+            ["Reuben", "Judah", "Simeon", "Levi"],
+            1,
+            "Judah. Reuben had urged them not to kill Joseph and meant to rescue him from the pit.",
+            "37:27",
+            "Come, and let us sell him to the Ishmeelites, and let not our hand be upon him; for he is our brother and our flesh.",
+            "Genesis 37:18–28",
+            "Genesis+37",
+          ],
+          [
+            "F",
+            "How old was Joseph when he stood before Pharaoh?",
+            ["Seventeen", "Thirty", "Forty", "Twenty-five"],
+            1,
+            "Thirty. He had been sold at seventeen.",
+            "41:46",
+            "And Joseph was thirty years old when he stood before Pharaoh king of Egypt.",
+            "Genesis 41:37–46",
+            "Genesis+41",
+          ],
+          [
+            "B",
+            "What did John the Baptist wear and eat in the wilderness?",
+            [
+              "Camel’s hair, locusts and wild honey",
+              "A white robe, bread and fish",
+              "Sheepskin, dates and figs",
+              "Sackcloth, olives and water",
+            ],
+            0,
+            "Camel’s hair with a leather belt, and locusts and wild honey.",
+            "1:6",
+            "And John was clothed with camel’s hair, and with a girdle of a skin about his loins; and he did eat locusts and wild honey.",
+            "Mark 1:1–8",
+            "Mark+1",
+          ],
+          [
+            "B",
+            "What descended on Jesus at his baptism?",
+            ["A flame", "The Spirit like a dove", "A cloud", "An angel"],
+            1,
+            "The Spirit like a dove, and a voice from heaven.",
+            "1:10",
+            "And straightway coming up out of the water, he saw the heavens opened, and the Spirit like a dove descending upon him.",
+            "Mark 1:9–11",
+            "Mark+1",
+          ],
+          [
+            "S",
+            "How did the four men get a paralyzed man to Jesus when the crowd blocked the door?",
+            [
+              "They broke through the roof and lowered him",
+              "They carried him through a side door",
+              "They waited until night",
+              "They called Jesus out of the house",
+            ],
+            0,
+            "They opened the roof and let down his bed. Jesus first forgave his sins.",
+            "2:4",
+            "And when they could not come nigh unto him for the press, they uncovered the roof where he was: and when they had broken it up, they let down the bed wherein the sick of the palsy lay.",
+            "Mark 2:1–12",
+            "Mark+2",
+          ],
+          [
+            "S",
+            "According to Jesus in Mark 2, for whom was the Sabbath made?",
+            [
+              "For man",
+              "For Israel alone",
+              "For the priests",
+              "For the temple",
+            ],
+            0,
+            "For man. Only Mark records this saying.",
+            "2:27",
+            "And he said unto them, The sabbath was made for man, and not man for the sabbath.",
+            "Mark 2:23–28",
+            "Mark+2",
+          ],
+          [
+            "S",
+            "Where was Jesus during the storm on the lake?",
+            [
+              "At the helm",
+              "Praying on the shore",
+              "Asleep on a pillow in the stern",
+              "Casting nets",
+            ],
+            2,
+            "Asleep on a pillow in the back of the boat. They woke him and he calmed the sea.",
+            "4:38",
+            "And he was in the hinder part of the ship, asleep on a pillow: and they awake him, and say unto him, Master, carest thou not that we perish?",
+            "Mark 4:35–41",
+            "Mark+4",
+          ],
+          [
+            "S",
+            "About how many pigs rushed into the sea after Jesus sent out the spirits called Legion?",
+            ["Two hundred", "Two thousand", "Five thousand", "Twelve thousand"],
+            1,
+            "About two thousand, Mark says.",
+            "5:13",
+            "And the unclean spirits went out, and entered into the swine: and the herd ran violently down a steep place into the sea, (they were about two thousand;) and were choked in the sea.",
+            "Mark 5:1–20",
+            "Mark+5",
+          ],
+          [
+            "S",
+            "How long had the woman who touched Jesus’s cloak been bleeding?",
+            [
+              "Seven years",
+              "Twelve years",
+              "Eighteen years",
+              "Thirty-eight years",
+            ],
+            1,
+            "Twelve years. She had spent all she had on physicians.",
+            "5:25",
+            "And a certain woman, which had an issue of blood twelve years.",
+            "Mark 5:25–34",
+            "Mark+5",
+          ],
+          [
+            "S",
+            "How many baskets of leftovers were collected after the feeding of the five thousand?",
+            ["Seven", "Twelve", "Five", "Ten"],
+            1,
+            "Twelve. At the feeding of the four thousand it was seven.",
+            "6:43",
+            "And they took up twelve baskets full of the fragments, and of the fishes.",
+            "Mark 6:30–44",
+            "Mark+6",
+          ],
+          [
+            "F",
+            "What Aramaic word did Jesus speak when he healed a deaf man?",
+            ["Talitha cumi", "Ephphatha", "Eloi", "Rabboni"],
+            1,
+            "Ephphatha, “be opened.” Mark keeps the original word.",
+            "7:34",
+            "And looking up to heaven, he sighed, and saith unto him, Ephphatha, that is, Be opened.",
+            "Mark 7:31–37",
+            "Mark+7",
+          ],
+          [
+            "S",
+            "Who did Peter say Jesus was, at Caesarea Philippi?",
+            ["The Christ", "Elijah", "John the Baptist", "One of the prophets"],
+            0,
+            "The Christ. The others were guesses people made.",
+            "8:29",
+            "And he saith unto them, But whom say ye that I am? And Peter answereth and saith unto him, Thou art the Christ.",
+            "Mark 8:27–30",
+            "Mark+8",
+          ],
+          [
+            "F",
+            "What did the blind man at Bethsaida say after Jesus first touched his eyes?",
+            [
+              "I see men as trees, walking",
+              "I see only light",
+              "I see nothing yet",
+              "I see a great crowd",
+            ],
+            0,
+            "Only Mark records a healing in two stages. A second touch made him see clearly.",
+            "8:24",
+            "And he looked up, and said, I see men as trees, walking.",
+            "Mark 8:22–26",
+            "Mark+8",
+          ],
+          [
+            "S",
+            "Which three disciples went with Jesus up the mountain where he was transfigured?",
+            [
+              "Peter, James and John",
+              "Peter, Andrew and Philip",
+              "James, John and Judas",
+              "Peter, John and Thomas",
+            ],
+            0,
+            "Peter, James and John. They were also with him at Jairus’s house.",
+            "9:2",
+            "And after six days Jesus taketh with him Peter, and James, and John, and leadeth them up into an high mountain apart by themselves: and he was transfigured before them.",
+            "Mark 9:2–8",
+            "Mark+9",
+          ],
+          [
+            "F",
+            "Whose son was the blind beggar Bartimaeus?",
+            ["Timaeus", "Alphaeus", "Zebedee", "Jonas"],
+            0,
+            "Timaeus. Bartimaeus is the only man healed by Jesus in Mark who is named.",
+            "10:46",
+            "And they came to Jericho: and as he went out of Jericho with his disciples and a great number of people, blind Bartimaeus, the son of Timaeus, sat by the highway side begging.",
+            "Mark 10:46–52",
+            "Mark+10",
+          ],
+          [
+            "B",
+            "How much did the poor widow put into the temple treasury?",
+            ["Two mites", "One denarius", "A talent", "Ten shekels"],
+            0,
+            "Two mites, which make a farthing. Jesus said she gave more than all the rest.",
+            "12:42",
+            "And there came a certain poor widow, and she threw in two mites, which make a farthing.",
+            "Mark 12:41–44",
+            "Mark+12",
+          ],
+          [
+            "F",
+            "What detail does only Mark add to Jesus’s arrest at Gethsemane?",
+            [
+              "A young man fled, leaving his linen cloth",
+              "Malchus’s ear was healed",
+              "Judas kissed Jesus",
+              "Peter drew a sword",
+            ],
+            0,
+            "A young man in a linen cloth ran away naked. He is not named.",
+            "14:52",
+            "And he left the linen cloth, and fled from them naked.",
+            "Mark 14:43–52",
+            "Mark+14",
+          ],
+          [
+            "S",
+            "To whom is Luke’s Gospel addressed?",
+            ["Theophilus", "Timothy", "Titus", "Philemon"],
+            0,
+            "Theophilus. Acts is addressed to the same person.",
+            "1:3",
+            "It seemed good to me also, having had perfect understanding of all things from the very first, to write unto thee in order, most excellent Theophilus.",
+            "Luke 1:1–4",
+            "Luke+1",
+          ],
+          [
+            "S",
+            "Why was Zacharias made unable to speak?",
+            [
+              "He did not believe the angel’s words",
+              "He had entered the holy place unprepared",
+              "He spoke against Elisabeth",
+              "He doubted Mary",
+            ],
+            0,
+            "Gabriel said he would be silent until John was born, because he did not believe.",
+            "1:20",
+            "And, behold, thou shalt be dumb, and not able to speak, until the day that these things shall be performed, because thou believest not my words, which shall be fulfilled in their season.",
+            "Luke 1:5–25",
+            "Luke+1",
+          ],
+          [
+            "B",
+            "According to Luke, why was Jesus laid in a manger?",
+            [
+              "There was no room for them in the inn",
+              "Herod’s soldiers were searching",
+              "Joseph was a shepherd",
+              "The inn was closed",
+            ],
+            0,
+            "Luke says there was no room in the inn.",
+            "2:7",
+            "And she brought forth her firstborn son, and wrapped him in swaddling clothes, and laid him in a manger; because there was no room for them in the inn.",
+            "Luke 2:1–7",
+            "Luke+2",
+          ],
+          [
+            "S",
+            "Who took the infant Jesus in his arms in the temple and said his eyes had seen God’s salvation?",
+            ["Simeon", "Zacharias", "Eli", "Gamaliel"],
+            0,
+            "Simeon, a devout man to whom the Spirit had promised he would see the Christ.",
+            "2:30",
+            "For mine eyes have seen thy salvation.",
+            "Luke 2:25–35",
+            "Luke+2",
+          ],
+          [
+            "S",
+            "How many days passed before Mary and Joseph found the boy Jesus in the temple?",
+            ["One", "Three", "Seven", "Forty"],
+            1,
+            "After three days, sitting among the teachers and asking them questions.",
+            "2:46",
+            "And it came to pass, that after three days they found him in the temple, sitting in the midst of the doctors, both hearing them, and asking them questions.",
+            "Luke 2:41–52",
+            "Luke+2",
+          ],
+          [
+            "S",
+            "About how old was Jesus when he began his ministry, according to Luke?",
+            ["Twenty", "Twenty-five", "Thirty", "Forty"],
+            2,
+            "About thirty.",
+            "3:23",
+            "And Jesus himself began to be about thirty years of age.",
+            "Luke 3:21–23",
+            "Luke+3",
+          ],
+          [
+            "S",
+            "Which prophet’s scroll did Jesus read aloud in the synagogue at Nazareth?",
+            ["Isaiah", "Jeremiah", "Ezekiel", "Daniel"],
+            0,
+            "Isaiah. He read about good news to the poor and said it was fulfilled that day.",
+            "4:17",
+            "And there was delivered unto him the book of the prophet Esaias.",
+            "Luke 4:16–21",
+            "Luke+4",
+          ],
+          [
+            "S",
+            "What did Peter say to Jesus after the great catch of fish?",
+            [
+              "Depart from me; for I am a sinful man",
+              "Lord, teach us to pray",
+              "Thou art the Christ",
+              "Master, we have toiled all night",
+            ],
+            0,
+            "He fell at Jesus’s knees. Jesus told him not to be afraid, and that he would catch men.",
+            "5:8",
+            "When Simon Peter saw it, he fell down at Jesus’ knees, saying, Depart from me; for I am a sinful man, O Lord.",
+            "Luke 5:1–11",
+            "Luke+5",
+          ],
+          [
+            "F",
+            "About whose faith did Jesus say he had not found so great, even in Israel?",
+            ["A centurion", "A Pharisee", "A widow", "A tax collector"],
+            0,
+            "A Roman centurion, whose servant was healed from a distance.",
+            "7:9",
+            "I say unto you, I have not found so great faith, no, not in Israel.",
+            "Luke 7:1–10",
+            "Luke+7",
+          ],
+          [
+            "B",
+            "On which road was the man in the Good Samaritan story attacked?",
+            [
+              "Jerusalem to Jericho",
+              "Jericho to Bethany",
+              "Jerusalem to Emmaus",
+              "Nazareth to Capernaum",
+            ],
+            0,
+            "The road from Jerusalem down to Jericho.",
+            "10:30",
+            "A certain man went down from Jerusalem to Jericho, and fell among thieves.",
+            "Luke 10:25–37",
+            "Luke+10",
+          ],
+          [
+            "S",
+            "Which sister was “cumbered about much serving”?",
+            ["Martha", "Mary", "Salome", "Joanna"],
+            0,
+            "Martha. Jesus said Mary had chosen the good part.",
+            "10:40",
+            "But Martha was cumbered about much serving, and came to him, and said, Lord, dost thou not care that my sister hath left me to serve alone?",
+            "Luke 10:38–42",
+            "Luke+10",
+          ],
+          [
+            "S",
+            "What did Zacchaeus climb to see Jesus?",
+            ["A fig tree", "A sycomore tree", "An olive tree", "A palm tree"],
+            1,
+            "A sycomore tree. He was a chief tax collector and short in height.",
+            "19:4",
+            "And he ran before, and climbed up into a sycomore tree to see him: for he was to pass that way.",
+            "Luke 19:1–10",
+            "Luke+19",
+          ],
+          [
+            "S",
+            "Of the ten lepers healed in Luke 17, who came back to thank Jesus?",
+            ["A Samaritan", "A priest", "A Roman soldier", "A Pharisee"],
+            0,
+            "A Samaritan. Only Luke tells this story.",
+            "17:16",
+            "And fell down on his face at his feet, giving him thanks: and he was a Samaritan.",
+            "Luke 17:11–19",
+            "Luke+17",
+          ],
+          [
+            "B",
+            "What job did the younger son take in the far country?",
+            [
+              "Feeding pigs",
+              "Tending sheep",
+              "Building houses",
+              "Collecting taxes",
+            ],
+            0,
+            "He fed swine, and wished he could eat what they ate.",
+            "15:15",
+            "And he went and joined himself to a citizen of that country; and he sent him into his fields to feed swine.",
+            "Luke 15:11–24",
+            "Luke+15",
+          ],
+          [
+            "F",
+            "Who is named as one of the two travelers on the road to Emmaus?",
+            ["Cleopas", "Barnabas", "Stephen", "Silas"],
+            0,
+            "Cleopas. The other is not named.",
+            "24:18",
+            "And the one of them, whose name was Cleopas, answering said unto him, Art thou only a stranger in Jerusalem, and hast not known the things which are come to pass there in these days?",
+            "Luke 24:13–35",
+            "Luke+24",
+          ],
+        ]),
+      );
+      QS.push(
+        ...BATCH([
+          [
+            "B",
+            `What reason does the angel give for the name Jesus?`,
+            [
+              `He shall save his people from their sins`,
+              `He shall rule over Israel`,
+              `It means God’s gift`,
+              `He shall be called a Nazarene`,
+            ],
+            0,
+            `The name means “the Lord saves,” and the angel ties it to saving his people from their sins.`,
+            `1:21`,
+            `And she shall bring forth a son, and thou shalt call his name JESUS: for he shall save his people from their sins.`,
+            `Matthew 1:18–25`,
+            `Matthew+1`,
+          ],
+          [
+            "S",
+            `Which of these women is NOT named in Matthew’s genealogy of Jesus?`,
+            [`Rahab`, `Ruth`, `Sarah`, `Tamar`],
+            2,
+            `Matthew names Tamar, Rahab, Ruth and Bathsheba (as the wife of Uriah) before Mary.`,
+            `1:5`,
+            `And Salmon begat Booz of Rachab; and Booz begat Obed of Ruth; and Obed begat Jesse;`,
+            `Matthew 1:1–16`,
+            `Matthew+1`,
+          ],
+          [
+            "B",
+            `Which three gifts did the wise men bring?`,
+            [
+              `Gold, frankincense and myrrh`,
+              `Gold, silver and pearls`,
+              `Frankincense, spikenard and wine`,
+              `Myrrh, oil and bread`,
+            ],
+            0,
+            `Gold, frankincense and myrrh. Matthew does not say there were three men.`,
+            `2:11`,
+            `And when they were come into the house, they saw the young child with Mary his mother, and fell down, and worshipped him: and when they had opened their treasures, they presented unto him gifts; gold and frankincense and myrrh.`,
+            `Matthew 2:1–12`,
+            `Matthew+2`,
+          ],
+          [
+            "B",
+            `Which king was ruling when Jesus was born, according to Matthew?`,
+            [`Herod`, `Pilate`, `Caesar Augustus`, `Archelaus`],
+            0,
+            `Herod the Great, who ordered the killing of the boys of Bethlehem.`,
+            `2:1`,
+            `Now when Jesus was born in Bethlehem of Judaea in the days of Herod the king, behold, there came wise men from the east to Jerusalem.`,
+            `Matthew 2:1–18`,
+            `Matthew+2`,
+          ],
+          [
+            "S",
+            `What did the angel tell Joseph to do after the wise men left?`,
+            [
+              `Flee into Egypt`,
+              `Return to Nazareth`,
+              `Hide in Bethlehem`,
+              `Go to Rome`,
+            ],
+            0,
+            `Flee to Egypt, because Herod meant to destroy the child.`,
+            `2:13`,
+            `Arise, and take the young child and his mother, and flee into Egypt, and be thou there until I bring thee word: for Herod will seek the young child to destroy him.`,
+            `Matthew 2:13–15`,
+            `Matthew+2`,
+          ],
+          [
+            "F",
+            `What does Matthew say was fulfilled by Jesus living in Nazareth?`,
+            [
+              `He shall be called a Nazarene`,
+              `Out of Egypt have I called my son`,
+              `A virgin shall conceive`,
+              `Thou Bethlehem, art not the least`,
+            ],
+            0,
+            `Matthew quotes “the prophets” for it. No single Old Testament verse says those exact words.`,
+            `2:23`,
+            `And he came and dwelt in a city called Nazareth: that it might be fulfilled which was spoken by the prophets, He shall be called a Nazarene.`,
+            `Matthew 2:19–23`,
+            `Matthew+2`,
+          ],
+          [
+            "S",
+            `Where did the devil set Jesus for the second temptation?`,
+            [
+              `On a pinnacle of the temple`,
+              `On a high mountain`,
+              `In the wilderness`,
+              `At the Jordan`,
+            ],
+            0,
+            `The pinnacle of the temple in the holy city. The third temptation was on a mountain.`,
+            `4:5`,
+            `Then the devil taketh him up into the holy city, and setteth him on a pinnacle of the temple.`,
+            `Matthew 4:1–11`,
+            `Matthew+4`,
+          ],
+          [
+            "B",
+            `What did Jesus say he would make Peter and Andrew?`,
+            [
+              `Fishers of men`,
+              `Shepherds of sheep`,
+              `Builders of the church`,
+              `Keepers of the keys`,
+            ],
+            0,
+            `Fishers of men. They were fishing when he called them.`,
+            `4:19`,
+            `And he saith unto them, Follow me, and I will make you fishers of men.`,
+            `Matthew 4:18–22`,
+            `Matthew+4`,
+          ],
+          [
+            "B",
+            `In the Beatitudes, who will inherit the earth?`,
+            [
+              `The meek`,
+              `The poor in spirit`,
+              `The merciful`,
+              `The peacemakers`,
+            ],
+            0,
+            `The meek. The poor in spirit are promised the kingdom of heaven.`,
+            `5:5`,
+            `Blessed are the meek: for they shall inherit the earth.`,
+            `Matthew 5:1–12`,
+            `Matthew+5`,
+          ],
+          [
+            "S",
+            `What does Jesus say cannot be hid?`,
+            [
+              `A city set on a hill`,
+              `A lamp under a bed`,
+              `A tree by the road`,
+              `A house on a rock`,
+            ],
+            0,
+            `A city on a hill. The next verses add the lamp on a stand.`,
+            `5:14`,
+            `Ye are the light of the world. A city that is set on an hill cannot be hid.`,
+            `Matthew 5:13–16`,
+            `Matthew+5`,
+          ],
+          [
+            "F",
+            `What does Jesus say will not pass from the law until everything is fulfilled?`,
+            [
+              `One jot or one tittle`,
+              `The Sabbath`,
+              `The temple`,
+              `The Ten Commandments`,
+            ],
+            0,
+            `The smallest letter and the smallest stroke.`,
+            `5:18`,
+            `For verily I say unto you, Till heaven and earth pass, one jot or one tittle shall in no wise pass from the law, till all be fulfilled.`,
+            `Matthew 5:17–20`,
+            `Matthew+5`,
+          ],
+          [
+            "S",
+            `In Matthew’s Lord’s Prayer, what follows “Our Father which art in heaven”?`,
+            [
+              `Hallowed be thy name`,
+              `Thy kingdom come`,
+              `Give us this day`,
+              `Forgive us our debts`,
+            ],
+            0,
+            `The first request is that God’s name be hallowed.`,
+            `6:9`,
+            `After this manner therefore pray ye: Our Father which art in heaven, Hallowed be thy name.`,
+            `Matthew 6:5–15`,
+            `Matthew+6`,
+          ],
+          [
+            "B",
+            `In Matthew 7:7, Jesus says ask, seek, and what?`,
+            [`Knock`, `Pray`, `Wait`, `Fast`],
+            0,
+            `Ask, seek, knock. Each comes with a promise.`,
+            `7:7`,
+            `Ask, and it shall be given you; seek, and ye shall find; knock, and it shall be opened unto you.`,
+            `Matthew 7:7–11`,
+            `Matthew+7`,
+          ],
+          [
+            "B",
+            `On what did the foolish man build his house?`,
+            [`Sand`, `Mud`, `Stone`, `Clay`],
+            0,
+            `Sand. The wise builder used rock.`,
+            `7:26`,
+            `And every one that heareth these sayings of mine, and doeth them not, shall be likened unto a foolish man, which built his house upon the sand.`,
+            `Matthew 7:24–29`,
+            `Matthew+7`,
+          ],
+          [
+            "S",
+            `What did the centurion say he was not worthy of?`,
+            [
+              `That Jesus should come under his roof`,
+              `To speak to a Jew`,
+              `To enter the synagogue`,
+              `To be healed`,
+            ],
+            0,
+            `He asked Jesus only to speak the word, and his servant was healed.`,
+            `8:8`,
+            `The centurion answered and said, Lord, I am not worthy that thou shouldest come under my roof: but speak the word only, and my servant shall be healed.`,
+            `Matthew 8:5–13`,
+            `Matthew+8`,
+          ],
+          [
+            "S",
+            `What was Matthew doing when Jesus called him?`,
+            [
+              `Sitting at the tax booth`,
+              `Fishing`,
+              `Mending nets`,
+              `Teaching in the synagogue`,
+            ],
+            0,
+            `He was at the place where taxes were collected.`,
+            `9:9`,
+            `And as Jesus passed forth from thence, he saw a man, named Matthew, sitting at the receipt of custom: and he saith unto him, Follow me. And he arose, and followed him.`,
+            `Matthew 9:9–13`,
+            `Matthew+9`,
+          ],
+          [
+            "S",
+            `For how much does Jesus say two sparrows are sold?`,
+            [`A farthing`, `A denarius`, `A talent`, `A shekel`],
+            0,
+            `A farthing, and not one falls without the Father.`,
+            `10:29`,
+            `Are not two sparrows sold for a farthing? and one of them shall not fall on the ground without your Father.`,
+            `Matthew 10:26–31`,
+            `Matthew+10`,
+          ],
+          [
+            "S",
+            `Which prophet did Jesus name as the only sign he would give?`,
+            [`Jonah`, `Elijah`, `Moses`, `Daniel`],
+            0,
+            `Jonah, three days in the great fish. Matthew calls him Jonas.`,
+            `12:40`,
+            `For as Jonas was three days and three nights in the whale’s belly; so shall the Son of man be three days and three nights in the heart of the earth.`,
+            `Matthew 12:38–41`,
+            `Matthew+12`,
+          ],
+          [
+            "S",
+            `In the parable of the sower, what happened to the seed by the wayside?`,
+            [
+              `Birds devoured it`,
+              `The sun scorched it`,
+              `Thorns choked it`,
+              `It bore a hundredfold`,
+            ],
+            0,
+            `Birds ate it. Jesus explains it as the word taken away.`,
+            `13:4`,
+            `And when he sowed, some seeds fell by the way side, and the fowls came and devoured them up.`,
+            `Matthew 13:1–9, 18–23`,
+            `Matthew+13`,
+          ],
+          [
+            "S",
+            `Which seed does Jesus call the least of all seeds?`,
+            [`Mustard`, `Barley`, `Sesame`, `Flax`],
+            0,
+            `Mustard, which grows into the greatest of the herbs.`,
+            `13:32`,
+            `Which indeed is the least of all seeds: but when it is grown, it is the greatest among herbs, and becometh a tree, so that the birds of the air come and lodge in the branches thereof.`,
+            `Matthew 13:31–32`,
+            `Matthew+13`,
+          ],
+          [
+            "S",
+            `Why did Peter begin to sink when he walked on the water?`,
+            [
+              `He saw the wind and was afraid`,
+              `He doubted the boat`,
+              `He looked back at the disciples`,
+              `He was too tired`,
+            ],
+            0,
+            `He saw the wind boisterous and was afraid.`,
+            `14:30`,
+            `But when he saw the wind boisterous, he was afraid; and beginning to sink, he cried, saying, Lord, save me.`,
+            `Matthew 14:22–33`,
+            `Matthew+14`,
+          ],
+          [
+            "S",
+            `What does Jesus say will not prevail against his church?`,
+            [
+              `The gates of hell`,
+              `The armies of Rome`,
+              `The Pharisees`,
+              `The grave`,
+            ],
+            0,
+            `The gates of hell. Christians read “this rock” in different ways, but all read the promise.`,
+            `16:18`,
+            `And I say also unto thee, That thou art Peter, and upon this rock I will build my church; and the gates of hell shall not prevail against it.`,
+            `Matthew 16:13–20`,
+            `Matthew+16`,
+          ],
+          [
+            "F",
+            `Where did Peter find the coin to pay the temple tax?`,
+            [
+              `In a fish’s mouth`,
+              `In a purse`,
+              `Under a stone`,
+              `In the temple court`,
+            ],
+            0,
+            `In the mouth of the first fish he caught.`,
+            `17:27`,
+            `Notwithstanding, lest we should offend them, go thou to the sea, and cast an hook, and take up the fish that first cometh up; and when thou hast opened his mouth, thou shalt find a piece of money: that take, and give unto them for me and thee.`,
+            `Matthew 17:24–27`,
+            `Matthew+17`,
+          ],
+          [
+            "S",
+            `How many times does Jesus tell Peter to forgive?`,
+            [`Seven`, `Seventy times seven`, `Twelve`, `Three`],
+            1,
+            `Peter offered seven. Jesus said seventy times seven.`,
+            `18:22`,
+            `Jesus saith unto him, I say not unto thee, Until seven times: but, Until seventy times seven.`,
+            `Matthew 18:21–35`,
+            `Matthew+18`,
+          ],
+          [
+            "B",
+            `What does Jesus say is easier than for a rich man to enter the kingdom of God?`,
+            [
+              `A camel passing through the eye of a needle`,
+              `A stone floating on water`,
+              `A fish climbing a tree`,
+              `A lamb crossing the sea`,
+            ],
+            0,
+            `A camel through a needle’s eye. The disciples asked who then could be saved.`,
+            `19:24`,
+            `And again I say unto you, It is easier for a camel to go through the eye of a needle, than for a rich man to enter into the kingdom of God.`,
+            `Matthew 19:16–26`,
+            `Matthew+19`,
+          ],
+          [
+            "S",
+            `At what hour did the householder hire the last workers?`,
+            [`The eleventh`, `The ninth`, `The third`, `The sixth`],
+            0,
+            `About the eleventh hour, and they were paid the same as the rest.`,
+            `20:6`,
+            `And about the eleventh hour he went out, and found others standing idle, and saith unto them, Why stand ye here all the day idle?`,
+            `Matthew 20:1–16`,
+            `Matthew+20`,
+          ],
+          [
+            "B",
+            `How much did the chief priests agree to pay Judas?`,
+            [
+              `Thirty pieces of silver`,
+              `Ten talents`,
+              `Fifty denarii`,
+              `One hundred shekels`,
+            ],
+            0,
+            `Thirty pieces of silver.`,
+            `26:15`,
+            `And said unto them, What will ye give me, and I will deliver him unto you? And they covenanted with him for thirty pieces of silver.`,
+            `Matthew 26:14–16`,
+            `Matthew+26`,
+          ],
+          [
+            "F",
+            `What did the chief priests buy with the silver Judas threw down?`,
+            [
+              `The potter’s field`,
+              `A burial cave`,
+              `A vineyard`,
+              `A sacrifice`,
+            ],
+            0,
+            `The potter’s field, as a burial place for strangers.`,
+            `27:7`,
+            `And they took counsel, and bought with them the potter’s field, to bury strangers in.`,
+            `Matthew 27:3–10`,
+            `Matthew+27`,
+          ],
+          [
+            "S",
+            `Which words does Matthew record Jesus crying from the cross?`,
+            [
+              `My God, my God, why hast thou forsaken me?`,
+              `It is finished`,
+              `Father, forgive them`,
+              `Into thy hands I commend my spirit`,
+            ],
+            0,
+            `Mark records the same cry. “It is finished” is only in John.`,
+            `27:46`,
+            `And about the ninth hour Jesus cried with a loud voice, saying, Eli, Eli, lama sabachthani? that is to say, My God, my God, why hast thou forsaken me?`,
+            `Matthew 27:45–50`,
+            `Matthew+27`,
+          ],
+          [
+            "S",
+            `What does Jesus tell the disciples to do in the Great Commission?`,
+            [
+              `Teach all nations, baptizing them in the name of the Father, Son and Holy Ghost`,
+              `Wait in Jerusalem`,
+              `Heal the sick only`,
+              `Rebuild the temple`,
+            ],
+            0,
+            `Go, teach all nations, and baptize. He adds that he is with them always.`,
+            `28:19`,
+            `Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost.`,
+            `Matthew 28:16–20`,
+            `Matthew+28`,
+          ],
+          [
+            "B",
+            `How does John’s Gospel describe Jesus in its first verse?`,
+            [`The Word`, `The Branch`, `The Shepherd`, `The Rock`],
+            0,
+            `The Word, who was with God and was God.`,
+            `1:1`,
+            `In the beginning was the Word, and the Word was with God, and the Word was God.`,
+            `John 1:1–18`,
+            `John+1`,
+          ],
+          [
+            "B",
+            `What did John the Baptist call Jesus when he saw him coming?`,
+            [
+              `The Lamb of God`,
+              `The Son of David`,
+              `The Prince of Peace`,
+              `The Branch`,
+            ],
+            0,
+            `The Lamb of God, who takes away the sin of the world.`,
+            `1:29`,
+            `The next day John seeth Jesus coming unto him, and saith, Behold the Lamb of God, which taketh away the sin of the world.`,
+            `John 1:29–34`,
+            `John+1`,
+          ],
+          [
+            "S",
+            `What did Nathanael ask when Philip told him about Jesus of Nazareth?`,
+            [
+              `Can any good thing come out of Nazareth?`,
+              `Is he the son of David?`,
+              `Where was he born?`,
+              `Is he a prophet?`,
+            ],
+            0,
+            `Philip answered, “Come and see.”`,
+            `1:46`,
+            `And Nathanael said unto him, Can there any good thing come out of Nazareth? Philip saith unto him, Come and see.`,
+            `John 1:43–51`,
+            `John+1`,
+          ],
+          [
+            "B",
+            `Where did Jesus turn water into wine?`,
+            [`Cana of Galilee`, `Capernaum`, `Nazareth`, `Bethany`],
+            0,
+            `Cana of Galilee. John calls it the beginning of his signs.`,
+            `2:11`,
+            `This beginning of miracles did Jesus in Cana of Galilee, and manifested forth his glory; and his disciples believed on him.`,
+            `John 2:1–11`,
+            `John+2`,
+          ],
+          [
+            "B",
+            `Who came to Jesus by night in John 3?`,
+            [`Nicodemus`, `Joseph of Arimathea`, `Gamaliel`, `Zacchaeus`],
+            0,
+            `Nicodemus, a Pharisee and a ruler of the Jews.`,
+            `3:2`,
+            `The same came to Jesus by night, and said unto him, Rabbi, we know that thou art a teacher come from God.`,
+            `John 3:1–21`,
+            `John+3`,
+          ],
+          [
+            "B",
+            `According to John 3:16, what did God give because he loved the world?`,
+            [`His only begotten Son`, `The law`, `The temple`, `The Spirit`],
+            0,
+            `His only begotten Son, so that whoever believes should have everlasting life.`,
+            `3:16`,
+            `For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.`,
+            `John 3:16–21`,
+            `John+3`,
+          ],
+          [
+            "S",
+            `Where did Jesus speak with the Samaritan woman?`,
+            [
+              `At Jacob’s well`,
+              `At Mount Carmel`,
+              `By the Jordan`,
+              `At the pool of Bethesda`,
+            ],
+            0,
+            `At Jacob’s well near Sychar, at about noon.`,
+            `4:6`,
+            `Now Jacob’s well was there. Jesus therefore, being wearied with his journey, sat thus on the well: and it was about the sixth hour.`,
+            `John 4:1–42`,
+            `John+4`,
+          ],
+          [
+            "F",
+            `How long had the man at the pool of Bethesda been ill?`,
+            [
+              `Twelve years`,
+              `Thirty years`,
+              `Thirty-eight years`,
+              `Forty years`,
+            ],
+            2,
+            `Thirty-eight years. Jesus told him to take up his bed and walk.`,
+            `5:5`,
+            `And a certain man was there, which had an infirmity thirty and eight years.`,
+            `John 5:1–9`,
+            `John+5`,
+          ],
+          [
+            "S",
+            `Who had the five barley loaves and two fishes that fed the five thousand?`,
+            [`A boy`, `Andrew`, `Philip`, `A fisherman`],
+            0,
+            `A lad in the crowd. Only John mentions him, and Andrew brought him forward.`,
+            `6:9`,
+            `There is a lad here, which hath five barley loaves, and two small fishes: but what are they among so many?`,
+            `John 6:1–14`,
+            `John+6`,
+          ],
+          [
+            "S",
+            `Which “I am” saying follows the feeding of the five thousand?`,
+            [
+              `I am the bread of life`,
+              `I am the light of the world`,
+              `I am the good shepherd`,
+              `I am the vine`,
+            ],
+            0,
+            `The bread of life, spoken in Capernaum the next day.`,
+            `6:35`,
+            `And Jesus said unto them, I am the bread of life: he that cometh to me shall never hunger; and he that believeth on me shall never thirst.`,
+            `John 6:25–35`,
+            `John+6`,
+          ],
+          [
+            "B",
+            `What did Jesus say to those about to stone the woman caught in adultery?`,
+            [
+              `He that is without sin among you, let him first cast a stone at her`,
+              `Take her outside the city`,
+              `The law must be kept`,
+              `Let her be judged by Pilate`,
+            ],
+            0,
+            `Some early manuscripts do not have this passage (7:53–8:11), which is worth knowing.`,
+            `8:7`,
+            `So when they continued asking him, he lifted up himself, and said unto them, He that is without sin among you, let him first cast a stone at her.`,
+            `John 8:1–11`,
+            `John+8`,
+          ],
+          [
+            "F",
+            `What did Jesus do when the woman caught in adultery was brought to him?`,
+            [
+              `He wrote on the ground with his finger`,
+              `He walked away`,
+              `He prayed aloud`,
+              `He called the elders`,
+            ],
+            0,
+            `He stooped and wrote on the ground. The text does not say what.`,
+            `8:6`,
+            `But Jesus stooped down, and with his finger wrote on the ground, as though he heard them not.`,
+            `John 8:1–11`,
+            `John+8`,
+          ],
+          [
+            "S",
+            `In which pool was the man born blind told to wash?`,
+            [`Siloam`, `Bethesda`, `The Jordan`, `Gihon`],
+            0,
+            `The pool of Siloam, which John says means “Sent.”`,
+            `9:7`,
+            `And said unto him, Go, wash in the pool of Siloam, (which is by interpretation, Sent.) He went his way therefore, and washed, and came seeing.`,
+            `John 9:1–12`,
+            `John+9`,
+          ],
+          [
+            "B",
+            `What does the good shepherd do for the sheep?`,
+            [
+              `Gives his life`,
+              `Leads them to market`,
+              `Counts them nightly`,
+              `Sends them out`,
+            ],
+            0,
+            `He lays down his life for them.`,
+            `10:11`,
+            `I am the good shepherd: the good shepherd giveth his life for the sheep.`,
+            `John 10:1–18`,
+            `John+10`,
+          ],
+          [
+            "S",
+            `What is the shortest verse in the English Bible?`,
+            [
+              `Jesus wept`,
+              `Rejoice evermore`,
+              `Pray without ceasing`,
+              `God is love`,
+            ],
+            0,
+            `John 11:35 in the KJV, spoken at Lazarus’s tomb.`,
+            `11:35`,
+            `Jesus wept.`,
+            `John 11:28–44`,
+            `John+11`,
+          ],
+          [
+            "S",
+            `How many days had Lazarus been in the tomb when Jesus arrived?`,
+            [`Two`, `Three`, `Four`, `Seven`],
+            2,
+            `Four days.`,
+            `11:17`,
+            `Then when Jesus came, he found that he had lain in the grave four days already.`,
+            `John 11:1–44`,
+            `John+11`,
+          ],
+          [
+            "S",
+            `With what did Mary of Bethany anoint Jesus’s feet?`,
+            [`Spikenard`, `Frankincense`, `Myrrh`, `Olive oil`],
+            0,
+            `A pound of costly spikenard, and she wiped his feet with her hair.`,
+            `12:3`,
+            `Then took Mary a pound of ointment of spikenard, very costly, and anointed the feet of Jesus, and wiped his feet with her hair.`,
+            `John 12:1–8`,
+            `John+12`,
+          ],
+          [
+            "B",
+            `What did Jesus do for his disciples at the Last Supper in John?`,
+            [
+              `Washed their feet`,
+              `Gave them bread only`,
+              `Sent them out two by two`,
+              `Read the law to them`,
+            ],
+            0,
+            `He washed their feet with a towel and a basin.`,
+            `13:5`,
+            `After that he poureth water into a bason, and began to wash the disciples’ feet, and to wipe them with the towel wherewith he was girded.`,
+            `John 13:1–17`,
+            `John+13`,
+          ],
+          [
+            "S",
+            `To which disciple did Jesus say “I am the way, the truth, and the life”?`,
+            [`Thomas`, `Philip`, `Peter`, `Judas (not Iscariot)`],
+            0,
+            `Thomas, who had asked how they could know the way.`,
+            `14:6`,
+            `Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me.`,
+            `John 14:1–14`,
+            `John+14`,
+          ],
+          [
+            "S",
+            `In the true vine passage, who is the husbandman?`,
+            [`The Father`, `The Holy Spirit`, `Peter`, `John`],
+            0,
+            `The Father is the one who tends the vine.`,
+            `15:1`,
+            `I am the true vine, and my Father is the husbandman.`,
+            `John 15:1–8`,
+            `John+15`,
+          ],
+          [
+            "F",
+            `Why did the Jewish leaders not enter Pilate’s judgment hall?`,
+            [
+              `So they would not be defiled before the Passover`,
+              `They were afraid of Pilate`,
+              `They were not invited`,
+              `It was the Sabbath`,
+            ],
+            0,
+            `They did not want to be ceremonially unclean at Passover. They still brought Jesus to Pilate.`,
+            `18:28`,
+            `And they themselves went not into the judgment hall, lest they should be defiled; but that they might eat the passover.`,
+            `John 18:28–32`,
+            `John+18`,
+          ],
+          [
+            "S",
+            `What did Pilate ask Jesus in John 18?`,
+            [
+              `What is truth?`,
+              `Art thou a king?`,
+              `Who art thou?`,
+              `Where is thy kingdom?`,
+            ],
+            0,
+            `He asked “What is truth?” and went out without waiting for an answer.`,
+            `18:38`,
+            `Pilate saith unto him, What is truth?`,
+            `John 18:33–38`,
+            `John+18`,
+          ],
+          [
+            "F",
+            `What was unusual about Jesus’s coat, which the soldiers cast lots for?`,
+            [
+              `It was without seam`,
+              `It was purple`,
+              `It was sewn with gold`,
+              `It was torn`,
+            ],
+            0,
+            `Woven in one piece from the top.`,
+            `19:23`,
+            `Now the coat was without seam, woven from the top throughout.`,
+            `John 19:23–24`,
+            `John+19`,
+          ],
+          [
+            "B",
+            `What did Jesus say just before he died in John?`,
+            [
+              `It is finished`,
+              `Father, forgive them`,
+              `Into thy hands`,
+              `I thirst`,
+            ],
+            0,
+            `“It is finished.” He then bowed his head.`,
+            `19:30`,
+            `When Jesus therefore had received the vinegar, he said, It is finished: and he bowed his head, and gave up the ghost.`,
+            `John 19:28–30`,
+            `John+19`,
+          ],
+          [
+            "F",
+            `What did Nicodemus bring to prepare Jesus’s body?`,
+            [
+              `Myrrh and aloes, about a hundred pounds`,
+              `Spikenard`,
+              `Frankincense and gold`,
+              `Oil and wine`,
+            ],
+            0,
+            `About a hundred pounds of myrrh and aloes.`,
+            `19:39`,
+            `And there came also Nicodemus, which at the first came to Jesus by night, and brought a mixture of myrrh and aloes, about an hundred pound weight.`,
+            `John 19:38–42`,
+            `John+19`,
+          ],
+          [
+            "B",
+            `Which disciple said he would not believe unless he saw the nail prints?`,
+            [`Thomas`, `Philip`, `Peter`, `Andrew`],
+            0,
+            `Thomas, who was not there when Jesus first appeared.`,
+            `20:25`,
+            `Except I shall see in his hands the print of the nails, and put my finger into the print of the nails, and thrust my hand into his side, I will not believe.`,
+            `John 20:24–29`,
+            `John+20`,
+          ],
+          [
+            "S",
+            `What did Jesus say about those who believe without seeing?`,
+            [
+              `Blessed are they`,
+              `They will see greater things`,
+              `They are few`,
+              `They need no sign`,
+            ],
+            0,
+            `He called them blessed, and said it to Thomas.`,
+            `20:29`,
+            `Jesus saith unto him, Thomas, because thou hast seen me, thou hast believed: blessed are they that have not seen, and yet have believed.`,
+            `John 20:24–29`,
+            `John+20`,
+          ],
+          [
+            "S",
+            `Beside which sea did Jesus appear to the disciples in John 21?`,
+            [
+              `The Sea of Tiberias`,
+              `The Dead Sea`,
+              `The Red Sea`,
+              `The Great Sea`,
+            ],
+            0,
+            `The Sea of Tiberias, another name for the Sea of Galilee.`,
+            `21:1`,
+            `After these things Jesus shewed himself again to the disciples at the sea of Tiberias; and on this wise shewed he himself.`,
+            `John 21:1–14`,
+            `John+21`,
+          ],
+          [
+            "F",
+            `How many fish were in the net Peter drew to land?`,
+            [
+              `One hundred`,
+              `One hundred and twenty`,
+              `One hundred and fifty-three`,
+              `Two hundred`,
+            ],
+            2,
+            `A hundred and fifty-three, and the net did not break.`,
+            `21:11`,
+            `Simon Peter went up, and drew the net to land full of great fishes, an hundred and fifty and three.`,
+            `John 21:1–14`,
+            `John+21`,
+          ],
+          [
+            "S",
+            `How many times did Jesus ask Peter “lovest thou me”?`,
+            [`Once`, `Three times`, `Seven times`, `Twelve times`],
+            1,
+            `Three times, by the fire, after Peter had denied him three times.`,
+            `21:17`,
+            `He saith unto him the third time, Simon, son of Jonas, lovest thou me?`,
+            `John 21:15–19`,
+            `John+21`,
+          ],
+        ]),
+      );
+      const ORDER =
+        "Genesis,Exodus,Leviticus,Numbers,Deuteronomy,Joshua,Judges,Ruth,1 Samuel,2 Samuel,1 Kings,2 Kings,1 Chronicles,2 Chronicles,Ezra,Nehemiah,Esther,Job,Psalms,Proverbs,Ecclesiastes,Song of Solomon,Isaiah,Jeremiah,Lamentations,Ezekiel,Daniel,Hosea,Joel,Amos,Obadiah,Jonah,Micah,Nahum,Habakkuk,Zephaniah,Haggai,Zechariah,Malachi,Matthew,Mark,Luke,John,Acts,Romans,1 Corinthians,2 Corinthians,Galatians,Ephesians,Philippians,Colossians,1 Thessalonians,2 Thessalonians,1 Timothy,2 Timothy,Titus,Philemon,Hebrews,James,1 Peter,2 Peter,1 John,2 John,3 John,Jude,Revelation".split(
+          ",",
+        );
+      const bookOf = (Q) =>
+        Q.chap
+          .replace(/\+\d+$/, "")
+          .replace(/\+/g, " ")
+          .replace(/^Psalm$/, "Psalms");
+      const rank = (b) => {
+        const r = ORDER.indexOf(b);
+        return r < 0 ? 999 : r;
+      };
+      function seenGet() {
+        try {
+          return JSON.parse(localStorage.getItem("cv-seen")) || [];
+        } catch (e) {
+          return [];
+        }
+      }
+      function shuf(a) {
+        a = a.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      function setup() {
+        $("play").hidden = true;
+        $("summary").hidden = true;
+        $("setup").hidden = false;
+        const c = $("counts");
+        c.innerHTML = "";
+        const sel = $("book"),
+          tr = $("tiersel").value,
+          cur = sel.value || "",
+          seen = seenGet(),
+          by = {};
+        QS.forEach((Q, i) => {
+          if (tr && Q.t !== tr) return;
+          const b = bookOf(Q);
+          (by[b] = by[b] || []).push(i);
+        });
+        const unseen = (a) => a.filter((i) => !seen.includes(i)).length,
+          all = QS.map((_, i) => i).filter((i) => !tr || QS[i].t === tr);
+        sel.innerHTML = "";
+        const add = (v, t) => {
+          const o = document.createElement("option");
+          o.value = v;
+          o.textContent = t;
+          sel.appendChild(o);
+        };
+        add("", "Mixed: anywhere in the Bible (" + unseen(all) + " unseen)");
+        Object.keys(by)
+          .sort((a, b) => rank(a) - rank(b))
+          .forEach((b) =>
+            add(
+              b,
+              b + " (" + unseen(by[b]) + " unseen of " + by[b].length + ")",
+            ),
+          );
+        sel.value = cur;
+        if (sel.value !== cur) sel.value = "";
+        sel.onchange = setup;
+        $("tiersel").onchange = setup;
+        const pool = sel.value ? by[sel.value] : all,
+          left = unseen(pool);
+        [5, 10, 15, 20, 25, 30].forEach((n) => {
+          const b = document.createElement("button");
+          b.className = "btn";
+          b.type = "button";
+          b.textContent = n + " questions";
+          b.disabled = n > left;
+          b.onclick = () => begin(n);
+          c.appendChild(b);
+        });
+        $("left").textContent = left
+          ? left + " of " + pool.length + " in this choice not yet seen."
+          : "You have seen every question in this choice.";
+        $("reset").hidden = left >= 5;
+        $("reset").onclick = () => {
+          try {
+            localStorage.setItem(
+              "cv-seen",
+              JSON.stringify(seen.filter((i) => !pool.includes(i))),
+            );
+          } catch (e) {}
+          setup();
+        };
+        streak(false);
+      }
+      function begin(n) {
+        let seen = seenGet(),
+          bk = $("book").value,
+          all = QS.map((_, i) => i).filter(
+            (i) =>
+              (!bk || bookOf(QS[i]) === bk) &&
+              (!$("tiersel").value || QS[i].t === $("tiersel").value),
+          ),
+          pick = shuf(all.filter((i) => !seen.includes(i))).slice(0, n);
+        if (pick.length < n) {
+          setup();
+          return;
+        }
+        try {
+          localStorage.setItem("cv-seen", JSON.stringify(seen.concat(pick)));
+        } catch (e) {}
+        play(pick);
+      }
+      function play(set) {
+        st.set = set;
+        st.i = 0;
+        st.score = 0;
+        st.ans = [];
+        $("setup").hidden = true;
+        $("summary").hidden = true;
+        $("play").hidden = false;
+        show();
+        $("qtext").focus();
+      }
+      function summary() {
+        $("play").hidden = true;
+        $("setup").hidden = true;
+        const s = $("summary");
+        s.hidden = false;
+        const miss = [];
+        const rows = st.set
+          .map((qi, k) => {
+            const Q = QS[qi],
+              ok = st.ans[k] === Q.a;
+            if (!ok) miss.push(Q);
+            return (
+              '<li><span class="ref">' +
+              (ok ? "Right" : "Missed") +
+              " &middot; " +
+              esc(Q.ref) +
+              "</span><br>" +
+              esc(Q.q) +
+              "<br><em>" +
+              (ok ? "" : "You chose: " + esc(Q.o[st.ans[k]]) + ". ") +
+              "Answer: " +
+              esc(Q.o[Q.a]) +
+              ".</em></li>"
+            );
+          })
+          .join("");
+        const pool = miss
+          .concat(st.set.map((i) => QS[i]).filter((Q) => !miss.includes(Q)))
+          .slice(0, 4);
+        const read = pool
+          .map(
+            (Q) =>
+              '<li><a href="https://www.biblegateway.com/passage/?search=' +
+              Q.chap +
+              '&version=KJV" target="_blank" rel="noopener">' +
+              esc(Q.ref) +
+              '</a> <span class="ref">' +
+              (miss.includes(Q)
+                ? "you missed this one"
+                : "to read it in context") +
+              "</span></li>",
+          )
+          .join("");
+        s.innerHTML =
+          '<div class="ref">Summary</div><h2 tabindex="-1" id="sumh" style="font-size:2rem">' +
+          st.score +
+          " of " +
+          st.set.length +
+          ' right</h2><ol class="sum">' +
+          rows +
+          '</ol><h2>Read today</h2><p>Start with the passages behind the questions you missed, then the rest. Read the whole chapter, not just the verse.</p><ul class="sum">' +
+          read +
+          '</ul><div class="actions"><button class="btn" id="retry" type="button">Retry these questions</button><button class="btn" id="again" type="button">New set, same length</button><button class="btn" id="len" type="button">Change length or book</button></div>';
+        $("retry").onclick = () => play(st.set.slice());
+        $("again").onclick = () => begin(st.set.length);
+        $("len").onclick = setup;
+        $("sumh").focus();
+        window.scrollTo(0, 0);
+      }
+      addEventListener("hashchange", view);
+      setup();
+      topics();
+      readPlan();
+      view();
+    </script>
+  </body>
+</html>
